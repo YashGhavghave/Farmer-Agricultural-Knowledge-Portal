@@ -23,6 +23,7 @@ export default function GoogleCallback() {
 
         // SAVE YOUR APP LOGIN TOKEN (IMPORTANT)
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("Name", res.data.user.name);
 
         navigate("/");
       } catch (err) {
@@ -36,7 +37,10 @@ export default function GoogleCallback() {
 
   return (
     <>
-      hello
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-black">
+        <div className="h-10 w-10 bg-transparent rounded-full border-4 border-s-emerald-400 animate-spin"></div>
+        <div className="mt-4 text-lg text-white">Loading</div>
+      </div>
     </>
   )
 }

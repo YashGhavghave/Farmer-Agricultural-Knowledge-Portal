@@ -102,7 +102,7 @@ function Login() {
   // UI
   // --------------------------
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-gray-200">
+    <div className="flex h-[80vh] w-[30vw] flex-col justify-center px-6 py-12 lg:px-8 bg-gray-200 relative top-[10vh] left-[35vw] rounded-4xl  pb-30">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-black">
           Sign in to your account
@@ -126,7 +126,7 @@ function Login() {
                 required
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 
                   text-base text-gray-500 outline-1 -outline-offset-1 
-                  outline-white/10 placeholder:text-gray-500 
+                  outline-black placeholder:text-gray-500 
                   focus:outline-2 focus:-outline-offset-2 
                   focus:outline-indigo-500 sm:text-sm/6"
               />
@@ -148,7 +148,7 @@ function Login() {
                 required
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 
                   text-base text-gray-400 outline-1 -outline-offset-1 
-                  outline-white/10 placeholder:text-gray-500 
+                  outline-black placeholder:text-gray-500 
                   focus:outline-2 focus:-outline-offset-2 
                   focus:outline-indigo-500 sm:text-sm/6"
               />
@@ -195,12 +195,16 @@ function Login() {
         <div className="mt-4">
           <button
             onClick={loginWithGoogle}
-            className="flex w-full justify-center rounded-md bg-red-500 
+            className="flex w-full justify-center rounded-md bg-red-600 
               px-3 py-1.5 text-sm/6 font-semibold text-white 
-              hover:bg-red-400"
+              hover:bg-red-500"
           >
-            Login with Google
+            Sign-in with Google
           </button>
+        </div>
+        <div className='pt-5 ml-5'>
+          
+        <a href="/register" className='text-blue-500 '>Register New </a>
         </div>
       </div>
     </div>
