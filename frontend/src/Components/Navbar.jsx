@@ -1,24 +1,25 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import OrganicFarming from "./FarmingTechnique/OrganicFarming";
 
 function Navbar() {
-  // Dropdown states
   const [openDropdown, setOpenDropdown] = useState(null);
   const [profile, setprofile] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate()
 
-  // Memoize refs (important!)
   const dropdownRefs = useMemo(
     () => ({
       farming: React.createRef(),
-      grains: React.createRef(),
-      seasonal: React.createRef(),
       soil: React.createRef(),
-      pesticides: React.createRef(),
+      irrigation: React.createRef(),
+      crops: React.createRef(),
+      pest: React.createRef(),
+      equipment: React.createRef(),
     }),
     []
   );
+
 
   const LogoutRefs = useMemo(
     () => ({
@@ -26,7 +27,6 @@ function Navbar() {
     }), []
   )
 
-  // const profileRef = useRef(null)
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -42,7 +42,6 @@ function Navbar() {
 
   const mobileRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
       Object.entries(dropdownRefs).forEach(([key, ref]) => {
@@ -57,7 +56,6 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openDropdown, dropdownRefs]);
 
-  // Close mobile menu on click outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (LogoutRefs.logout.current && !LogoutRefs.logout.current.contains(e.target)) {
@@ -102,14 +100,18 @@ function Navbar() {
   }
 
   return (
-    <header className="w-full bg-white dark:bg-neutral-800 text-sm py-3 shadow">
+    <header className="w-full bg-gray-300 text-sm py-3 shadow">
       <nav
         className="max-w-[85rem] w-full mx-auto px-4 flex items-center justify-between"
         ref={mobileRef}
       >
-        {/* Brand */}
-        <a href="/" className="text-xl font-semibold dark:text-white">
-          AKP
+        <a href="/" className="relative inline-block px-5 py-0 backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl hover:shadow-3xl hover:bg-white/20 transition-all duration-500 hover:scale-110 group overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-green-400/30 via-emerald-400/20 to-teal-400/30 -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 opacity-0 group-hover:opacity-100"></div>
+          <span className="relative z-10 text-2xl font-black bg-gradient-to-r from-gray-800 via-gray-900 to-black font-mono bg-clip-text text-transparent drop-shadow-lg ">
+            AKP
+          </span>
+          {/* Subtle shine effect */}
+          <div className="absolute top-0 left-0 w-4 h-full bg-gradient-to-b from-transparent via-white/30 to-transparent -skew-x-12 transform origin-left group-hover:translate-x-full transition-transform duration-700"></div>
         </a>
 
         {/* Mobile Hamburger */}
@@ -138,46 +140,113 @@ function Navbar() {
           className={`${mobileOpen ? "block" : "hidden"
             } w-full sm:flex sm:w-auto sm:items-center sm:gap-6 mt-4 sm:mt-0`}
         >
-          <a className="font-medium text-gray-400 block sm:inline" href="/">
+          <a className="font-medium text-black block sm:inline" href="/">
             Home
           </a>
           {[
             {
               id: "farming",
               label: "Farming Techniques",
-              items: ["Dashboard", "Settings", "Earnings"],
-              link: ['/dashboard', '/settings', '/earnings']
-            },
-            {
-              id: "grains",
-              label: "Grains & Produce",
-              items: ["Rice", "Wheat", "Corn"],
-              link: ['/rice', '/wheat', '/corn']
-            },
-            {
-              id: "seasonal",
-              label: "Seasonal Produce",
-              items: ["Summer", "Winter", "Rainy"],
-              link: ['/summary', '/winter', '/rainy']
+              items: [
+                "Organic farming",
+                "Subsistence farming",
+                "Aquaponics",
+                "Vertical farming",
+                "Commercial farming",
+                "Agroforestry",
+                "Dryland farming",
+                "Precision farming",
+                "Hydroponics",
+                "Mixed farming",
+                "Plantation farming",
+                "Permaculture",
+                "Shifting cultivation",
+                "Urban agriculture",
+                "Extensive farming",
+                "Pastoral farming",
+                "Aeroponics",
+                "Intensive farming"
+              ],
+              link: [
+                '/farming_technique/organic-farming',
+                '/farming_technique/subsistence-farming',
+                '/farming_technique/aquaponics',
+                '/farming_technique/vertical-farming',
+                '/farming_technique/commercial-farming',
+                '/farming_technique/agroforestry',
+                '/farming_technique/dryland-farming',
+                '/farming_technique/precision-farming',
+                '/farming_technique/hydroponics',
+                '/farming_technique/mixed-farming',
+                '/farming_technique/plantation-farming',
+                '/farming_technique/permaculture',
+                '/farming_technique/shifting-cultivation',
+                '/farming_technique/urban-agriculture',
+                '/farming_technique/extensive-farming',
+                '/farming_technique/pastoral-farming',
+                '/farming_technique/aeroponics',
+                '/farming_technique/intensive-farming'
+              ]
             },
             {
               id: "soil",
               label: "Soil & Resources",
-              items: ["Soil Types", "Fertilizers", "Guides"],
-              link: ['/Soil', '/Fertilizers', '/Guides']
+              items: ["Soil Types", "Soil Testing", "Fertilizers Organic", "Fertilizers Chemical", "Soil Amendments"],
+              link: [
+                "/soil/soil-types", 
+                "/soil/soil-testing", 
+                "/soil/fertilizers-organic", 
+                "/soil/fertilizers-chemical", 
+                "/soil/soil-amendments"
+              ]
             },
             {
-              id: "pesticides",
-              label: "Pesticides & Guides",
-              items: ["Organic", "Chemical", "Usage Guide"],
-              link: ['/organic', '/chemical', '/usage']
+              id: "irrigation",
+              label: "Irrigation & Water",
+              items: ["Irrigation Methods", "Water Harvesting", "Drip & Sprinkler Guide"],
+              link: [
+                "/Irrigation/irrigation-methods", 
+                "/Irrigation/water-harvesting", 
+                "/Irrigation/drip-sprinkler-guide"
+              ]
             },
+            {
+              id: "crops",
+              label: "Crops & Guides",
+              items: ["Grains", "Pulses", "Cash Crops", "Vegetables & Fruits"],
+              link: [
+                "/crops_guides/grains", 
+                "/crops_guides/pulses", 
+                "/crops_guides/cash-crops", 
+                "/crops_guides/vegetables-fruits"
+              ]
+            },
+            {
+              id: "pest",
+              label: "Pest & Disease Management",
+              items: ["Bio-pesticides", "Chemical Pesticides", "IPM Guide"],
+              link: [
+                "/pest_disease_management/bio-pesticides", 
+                "/pest_disease_management/chemical-pesticides", 
+                "/pest_disease_management/ipm-guide"
+              ]
+            },
+            {
+              id: "equipment",
+              label: "Tools & Machinery",
+              items: ["Soil Preparation Tools", "Irrigation Equipment", "Harvesting Tools"],
+              link: [
+                "/tools_machinery/soil-tools", 
+                "/tools_machinery/irrigation-equipment", 
+                "/tools_machinery/harvesting-tools"
+              ]
+            }
 
           ].map(({ id, label, items, link }) => (
             <div key={id} className="relative inline-block" ref={dropdownRefs[id]}>
               <button
                 onClick={() => toggleDropdown(id)}
-                className="flex items-center font-medium text-gray-400 gap-2 cursor-pointer"
+                className="flex items-center font-medium text-black gap-2 cursor-pointer"
               >
                 {label}
               </button>
@@ -198,9 +267,9 @@ function Navbar() {
             </div>
           ))}
         </div>
-        <div className="relative" ref={LogoutRefs.logout}>
+        <div className="relative cursor-pointer" ref={LogoutRefs.logout}>
           <button
-            className="h-8 w-8 bg-neutral-600 rounded-full text-white flex items-center justify-center cursor-pointer"
+            className="h-8 w-8 bg-neutral-600 rounded-full text-white flex items-center justify-center cursor-pointer,"
             onClick={() => volatileprofile('logout')}
           >
             {loginchar("Name")}
@@ -209,10 +278,21 @@ function Navbar() {
 
           {/* Dropdown */}
           {profile === "logout" && (
-            <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50 p-4">
-              <button onClick={logout}>Logout</button>
+            <div
+              onClick={logout}
+              className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50 p-4 cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') logout();
+              }}
+            >
+              <span className="block text-center font-medium text-gray-800">
+                Logout
+              </span>
             </div>
           )}
+
         </div>
 
       </nav>
