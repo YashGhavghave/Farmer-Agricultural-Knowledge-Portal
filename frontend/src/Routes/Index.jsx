@@ -5,6 +5,15 @@ import {Routes, Route} from "react-router"
 import LandingPage from '../Components/LandingPage.jsx'
 import GoogleCallback from '../handler/callback.handler.jsx'
 
+// Navbar Pages
+
+import FarmingChapters from '../Components/Farming_chapter.jsx';
+import About from '../Components/About.jsx';
+import Fertilizers from '../Components/Fertilizers.jsx';
+import Soil from '../Components/Soil.jsx';
+import MarketGrowingBusiness from '../Components/MarketGrowingBusiness.jsx';
+import ToolsAndMachinery from '../Components/ToolMachinary.jsx';
+
 // Farming Technique
 
 import OrganicFarming from '../Components/FarmingTechnique/OrganicFarming.jsx'
@@ -69,6 +78,15 @@ function Index() {
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/" element={<LandingPage/>}></Route>
         <Route path="/google/callback" element={<GoogleCallback />} />
+
+        {/* Navbar Pages */}
+        <Route path="/nav/farming_chapter" element={<FarmingChapters/>}></Route>
+        <Route path="/nav/about" element={<About/>}></Route>
+        <Route path="/nav/Tools&machinery" element={<ToolsAndMachinery/>}></Route>
+        <Route path="/nav/soil" element={<Soil/>}></Route>
+        <Route path="/nav/market&growingbusiness" element={<MarketGrowingBusiness/>}></Route>
+        <Route path="/nav/fertilizer" element={<Fertilizers/>}></Route>
+
 
         {/* Farming Technique Routes */}
         <Route path="/farming_technique/organic-farming" element={<OrganicFarming/>}></Route>

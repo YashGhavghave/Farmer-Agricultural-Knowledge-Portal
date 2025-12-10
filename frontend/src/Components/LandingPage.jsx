@@ -30,7 +30,7 @@ function LandingPage() {
           <div className="lg:pr-12">
             <div className="mb-8">
               <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-                AI-Powered Precision Agriculture
+                Agriculture Knowledge Portal
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
                 Advanced AI platform delivering real-time crop monitoring, weather analytics, 
