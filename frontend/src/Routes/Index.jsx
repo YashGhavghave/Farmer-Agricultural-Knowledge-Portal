@@ -1,7 +1,8 @@
 import React from 'react'
 import Login from "../Components/Login.jsx"
 import Register from '../Components/Register.jsx'
-import {Routes, Route} from "react-router"
+import { Routes, Route } from "react-router-dom"
+import NotFound from "../Components/NotFound.jsx"
 import LandingPage from '../Components/LandingPage.jsx'
 import GoogleCallback from '../handler/callback.handler.jsx'
 
@@ -136,6 +137,7 @@ function Index() {
         <Route path="/crops_guides/grains" element={<Grains/>}></Route>
         <Route path="/crops_guides/vegetables-fruits" element={<VegetablesFruits/>}></Route>
         <Route path="/crops_guides/pulses" element={<Pulses/>}></Route>
+        <Route path="*" element={<NotFound/>} />
 
       </Routes>
     </div>

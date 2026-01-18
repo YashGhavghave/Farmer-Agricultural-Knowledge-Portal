@@ -1,12 +1,16 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function ExtensiveFarming() {
+  const intro = 'Overview of extensive farming systems that use large land areas with low inputs.'
+
   return (
-    <div>
-      <Navbar/>
-      Extensive Farming
-    </div>
+    <PageTemplate title={'Extensive Farming'} >
+      <div>
+        Extensive Farming
+      </div>
+    </PageTemplate>
   )
 }
 

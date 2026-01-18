@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(12,10)">
+    <circle cx="28" cy="30" r="18" fill="#ECFCCB" stroke="#16A34A" stroke-width="1" />
+    <path d="M10 58 L50 58" stroke="#A3E635" stroke-width="3" stroke-linecap="round" />
+    <text x="6" y="20" font-size="9" fill="#065F46" font-family="Arial">Organic</text>
+  </g>
+</svg>

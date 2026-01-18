@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(12,12)">
+    <path d="M6 6 L6 48 M12 6 L12 52 M18 8 L18 50 M24 6 L24 48" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" />
+    <rect x="30" y="24" width="48" height="24" rx="4" fill="#CFFAFE" stroke="#06B6D4" stroke-width="1" />
+    <text x="8" y="62" font-size="8" fill="#0C4A6E" font-family="Arial">Irrigation</text>
+  </g>
+</svg>

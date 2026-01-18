@@ -1,11 +1,14 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function Permaculture() {
+  const intro = 'Designing sustainable agricultural ecosystems inspired by natural systems.'
+
   return (
-    <div>
-      <Navbar/>
-    </div>
+    <PageTemplate title={'Permaculture'} >
+      <div />
+    </PageTemplate>
   )
 }
 

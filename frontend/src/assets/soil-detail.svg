@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(10,10)">
+    <rect x="0" y="0" width="40" height="56" rx="6" fill="#E6FFFA" stroke="#34D399" stroke-width="1" />
+    <circle cx="60" cy="24" r="16" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1" />
+    <text x="6" y="40" font-size="8" fill="#065F46" font-family="Arial">Soil</text>
+  </g>
+</svg>

@@ -1,12 +1,16 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function Agroforestry() {
+  const intro = 'Overview and best practices for Agroforestry systems integrating trees and crops.'
+
   return (
-    <div>
-      <Navbar/>
-      Agroforestry
-    </div>
+    <PageTemplate title={'Agroforestry'} >
+      <div>
+        Agroforestry
+      </div>
+    </PageTemplate>
   )
 }
 

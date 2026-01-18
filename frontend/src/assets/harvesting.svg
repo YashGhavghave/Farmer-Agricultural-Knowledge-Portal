@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(8,8)">
+    <rect x="0" y="0" width="56" height="56" rx="8" fill="#FEF3F2" stroke="#FB7185" stroke-width="1" />
+    <path d="M72 12 L72 56" stroke="#F97316" stroke-width="4" stroke-linecap="round" />
+    <text x="8" y="40" font-size="9" fill="#7C2D12" font-family="Arial">Harvest</text>
+  </g>
+</svg>

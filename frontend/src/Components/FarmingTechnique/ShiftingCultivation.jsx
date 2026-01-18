@@ -1,12 +1,16 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function ShiftingCultivation() {
+  const intro = 'Traditional system where land is cleared, cultivated briefly, then left fallow.'
+
   return (
-    <div>
-      <Navbar/>
-      Shifting Cultivation
-    </div>
+    <PageTemplate title={'Shifting Cultivation'} >
+      <div>
+        Shifting Cultivation
+      </div>
+    </PageTemplate>
   )
 }
 

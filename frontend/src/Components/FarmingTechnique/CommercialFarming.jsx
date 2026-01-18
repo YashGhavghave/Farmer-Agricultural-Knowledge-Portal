@@ -1,12 +1,16 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function CommercialFarming() {
+  const intro = 'Practices and strategies for commercial-scale farming and market-oriented production.'
+
   return (
-    <div>
-      <Navbar/>
-      Commercial Farming
-    </div>
+    <PageTemplate title={'Commercial Farming'} >
+      <div>
+        Commercial Farming
+      </div>
+    </PageTemplate>
   )
 }
 

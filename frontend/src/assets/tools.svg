@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(12,10)">
+    <rect x="0" y="0" width="36" height="20" rx="4" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1" />
+    <rect x="44" y="10" width="56" height="44" rx="6" fill="#F8FAFC" stroke="#0EA5AE" stroke-width="1" />
+    <text x="6" y="36" font-size="9" fill="#1F2937" font-family="Arial">Tools</text>
+  </g>
+</svg>

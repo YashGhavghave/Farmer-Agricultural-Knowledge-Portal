@@ -1,12 +1,16 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function UrbanAgriculture() {
+  const intro = 'Farming practices adapted for cities and small urban spaces.'
+
   return (
-    <div>
-        <Navbar/>
-      Urban agriculture
-    </div>
+    <PageTemplate title={'Urban Agriculture'} >
+      <div>
+        Urban agriculture
+      </div>
+    </PageTemplate>
   )
 }
 

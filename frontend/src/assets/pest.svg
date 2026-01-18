@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(10,12)">
+    <circle cx="18" cy="28" r="12" fill="#FECACA" stroke="#DC2626" stroke-width="1" />
+    <path d="M36 18 L56 18 L56 38 L36 38 Z" fill="#FEE2E2" stroke="#EF4444" stroke-width="1" />
+    <text x="8" y="62" font-size="8" fill="#7C2D12" font-family="Arial">Pest Mgmt</text>
+  </g>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <rect width="120" height="80" rx="8" fill="#fff" />
+  <g transform="translate(10,12)">
+    <rect x="0" y="10" width="40" height="34" rx="6" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1" />
+    <rect x="52" y="8" width="56" height="46" rx="6" fill="#ECFCCB" stroke="#84CC16" stroke-width="1" />
+    <text x="6" y="50" font-size="8" fill="#374151" font-family="Arial">Market</text>
+  </g>
+</svg>

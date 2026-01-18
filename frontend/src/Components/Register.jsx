@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { useTheme } from '../Context/ThemeContext';
+
+function MyComponent() {
+  const { isDark } = useTheme();
+  return <div className={isDark ? 'dark-classes' : 'light-classes'}>...</div>;
+}
+
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

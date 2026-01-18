@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import Footer from './footer.jsx' 
+import { useTheme } from '../Context/ThemeContext';
 
 
 function TokenVerify() {
@@ -18,8 +19,9 @@ function TokenVerify() {
 }
 
 function LandingPage() {
+  const { isDark } = useTheme();
   return (
-    <div className="min-h-screen w-full bg-white">
+    <div className="min-h-screen w-full bg-white" style={isDark ? { backgroundColor: '#1f2937' } : { backgroundColor: '#ffffff' }}>
       <Navbar />
       <TokenVerify />
       

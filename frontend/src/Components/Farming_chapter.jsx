@@ -1,22 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar'
-import Footer from './footer.jsx';
+import PageTemplate from './ui/PageTemplate'
+import hero from '../assets/farming.svg'
+import { useTheme } from '../Context/ThemeContext';
+
 
 function Farming_chapter() {
+    const { isDark } = useTheme();
+  const intro = 'Complete beginner guide to agriculture, farming techniques, and becoming a smart farmer.'
+
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-
-      <div className="max-w-5xl mx-auto px-6 py-10 text-gray-800 leading-7">
-
-        {/* Title */}
-        <h1 className="text-4xl font-bold text-green-700 mb-6">
-          Introduction to Agriculture
-        </h1>
-
+    <PageTemplate title={'Introduction to Agriculture'}  className={isDark ? 'dark-classes' : 'light-classes'}>
+      <div className="text-gray-800 leading-7"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
         {/* Intro Paragraph */}
-        <p className="mb-6">
+        <p className="mb-6 p-6 rounded-2xl shadow" style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           Agriculture is the foundation of human civilization. It involves the
           cultivation of crops, management of soil, raising of animals, and the
           use of technology to produce food, fiber, and raw materials. For
@@ -27,25 +24,25 @@ function Farming_chapter() {
           strong base before exploring deeper chapters.
         </p>
 
-        {/* Section 1 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           1. What Is Agriculture?
         </h2>
         <p>
-          Agriculture is the science, art, and practice of growing plants and
-          rearing animals for human use. It includes several essential
+          Agriculture is the science, art, and practice of growing plants and rearing animals for human use. It includes several essential
           activities such as soil preparation, seed selection, irrigation,
           fertilization, pest and disease control, crop harvesting, storage,
           and post-harvest processing. Modern agriculture now integrates AI,
           Machine Learning, IoT sensors, weather prediction, and drone-based
           monitoring to improve productivity and reduce risk.
         </p>
+  </section>
 
-
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           2. Types of Farming
         </h2>
-        <div className="flex flex-col text-blue-500">
+        <div className="flex flex-col text-blue-500"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           <Link to="/farming_technique/aeroponics">:- What is Aeroponics Farming?</Link>
           <Link to="/farming_technique/agroforestry">:- What is Agroforestry Farming?</Link>
           <Link to="/farming_technique/aquaponics">:- What is Aquaponics Farming?</Link>
@@ -65,12 +62,13 @@ function Farming_chapter() {
           <Link to="/farming_technique/dryland-farming">:- What is Dryland Farming?</Link>
           <Link to="/farming_technique/pastoral-farming">:- What is Pastoral Farming?</Link>
         </div>
+  </section>
 
-        {/* Section 2 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           3. Importance of Agriculture
         </h2>
-        <ul className="list-disc pl-6">
+        <ul className="list-disc pl-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           <li>A primary source of food for the global population</li>
           <li>Provides raw materials for industries like textiles, oil, sugar, paper</li>
           <li>Major employment source—especially in developing countries</li>
@@ -78,13 +76,14 @@ function Farming_chapter() {
           <li>Maintains ecological balance and biodiversity</li>
           <li>Vital for national food security and self-sufficiency</li>
         </ul>
+  </section>
 
-        {/* Section 3 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           4. Branches of Agriculture
         </h2>
         <p> Agriculture is a broad field divided into many specialized branches: </p>
-        <ul className="list-disc pl-6 mt-2">
+        <ul className="list-disc pl-6 mt-2"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           <li><b>Agronomy:</b> Field crop production, soil management, irrigation</li>
           <li><b>Horticulture:</b> Fruits, vegetables, flowers, medicinal plants</li>
           <li><b>Animal Husbandry:</b> Rearing cattle, goats, poultry, dairy animals</li>
@@ -96,61 +95,56 @@ function Farming_chapter() {
           <li><b>Agroforestry:</b> Integrated trees + crops farming systems</li>
           <li><b>Organic Farming:</b> Natural, chemical-free agriculture</li>
         </ul>
+  </section>
 
-        {/* Section 4 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           5. Basic Requirements for Farming
         </h2>
 
-        <h3 className="text-xl font-semibold mt-4">a) Soil</h3>
+        <h3 className="text-xl font-semibold mt-4"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>a) Soil</h3>
         <p>
           Soil is the foundation of agriculture. Different crops grow best in
-          different soil types. Understanding soil structure, texture, pH,
-          nutrients, and water-holding capacity helps farmers plan their fields.
+          different soil types. Understanding soil structure, texture, pH, nutrients, and water-holding capacity helps farmers plan their fields.
         </p>
 
-        <h3 className="text-xl font-semibold mt-4">b) Water / Irrigation</h3>
+        <h3 className="text-xl font-semibold mt-4"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>b) Water / Irrigation</h3>
         <p>
           Plants require water for photosynthesis and nutrient transport.
-          Irrigation systems include drip, sprinkler, flood, furrow, and modern
-          sensor-based irrigation.
+          Irrigation systems include drip, sprinkler, flood, furrow, and modern sensor-based irrigation.
         </p>
 
-        <h3 className="text-xl font-semibold mt-4">c) Climate</h3>
+        <h3 className="text-xl font-semibold mt-4"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>c) Climate</h3>
         <p>
           Temperature, sunlight, humidity, wind, and rainfall affect plant
           growth. Each crop has a specific climatic requirement—for example,
-          cotton thrives in high temperatures, while wheat prefers cooler
-          weather.
+          cotton thrives in high temperatures, while wheat prefers cooler weather.
         </p>
 
-        <h3 className="text-xl font-semibold mt-4">d) Seeds</h3>
+        <h3 className="text-xl font-semibold mt-4"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>d) Seeds</h3>
         <p>
           High-quality seeds are essential for achieving higher yields and
-          disease resistance. Seeds can be hybrid, genetically improved, or
-          traditional varieties depending on crop and region.
+          disease resistance. Seeds can be hybrid, genetically improved, or traditional varieties depending on crop and region.
         </p>
 
-        <h3 className="text-xl font-semibold mt-4">e) Fertilizers & Nutrients</h3>
+        <h3 className="text-xl font-semibold mt-4"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>e) Fertilizers & Nutrients</h3>
         <p>
           Plants require nitrogen (N), phosphorus (P), potassium (K), and
-          micronutrients such as zinc, sulfur, and magnesium. These are
-          supplied through organic sources (compost, manure) or chemical
-          fertilizers.
+          micronutrients such as zinc, sulfur, and magnesium. These are supplied through organic sources (compost, manure) or chemical fertilizers.
         </p>
 
-        <h3 className="text-xl font-semibold mt-4">f) Pest & Disease Management</h3>
+        <h3 className="text-xl font-semibold mt-4"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>f) Pest & Disease Management</h3>
         <p>
           Crops often suffer from fungal, bacterial, viral, and insect-related
-          issues. Timely diagnosis and treatment using pesticides, biological
-          control, and AI-based disease detection tools reduces crop loss.
+          issues. Timely diagnosis and treatment using pesticides, biological control, and AI-based disease detection tools reduces crop loss.
         </p>
+  </section>
 
-        {/* Section 5 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           6. Types of Farming
         </h2>
-        <ul className="list-disc pl-6">
+        <ul className="list-disc pl-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           <li><b>Subsistence Farming:</b> Growing crops for personal/family use</li>
           <li><b>Commercial Farming:</b> Large-scale farming for profit and markets</li>
           <li><b>Mixed Farming:</b> Combination of crops + livestock</li>
@@ -159,12 +153,13 @@ function Farming_chapter() {
           <li><b>Extensive Farming:</b> Low input, large land area farming</li>
           <li><b>Precision Farming:</b> AI, sensors, drones, ML models to improve yield</li>
         </ul>
+  </section>
 
-        {/* Section 6 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           7. Key Challenges Faced by Beginners
         </h2>
-        <ul className="list-disc pl-6">
+        <ul className="list-disc pl-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           <li>Lack of knowledge about soil properties and crop suitability</li>
           <li>Unawareness of seasonal crop patterns</li>
           <li>Improper fertilizer usage leading to nutrient imbalance</li>
@@ -173,9 +168,10 @@ function Farming_chapter() {
           <li>Lack of access to expert guidance and scientific farming practices</li>
           <li>Difficulty identifying plant diseases</li>
         </ul>
+  </section>
 
-        {/* Section 7 */}
-        <h2 className="text-2xl font-bold text-green-800 mt-10 mb-3">
+  <section className="bg-white p-6 rounded-2xl shadow mb-6"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
+  <h2 className="text-2xl font-semibold text-green-800 mb-3"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           8. How Our Platform Helps Beginners
         </h2>
         <p>
@@ -184,7 +180,7 @@ function Farming_chapter() {
           knowledge to support every stage of crop production.
         </p>
 
-        <ul className="list-disc pl-6 mt-2">
+        <ul className="list-disc pl-6 mt-2"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           <li>Chapter-based learning for step-by-step understanding</li>
           <li>AI-powered plant disease detection</li>
           <li>Automatic pesticide recommendations</li>
@@ -194,17 +190,15 @@ function Farming_chapter() {
           <li>Beginner-friendly language and visuals for quick learning</li>
         </ul>
 
-        <p className="mt-8 mb-12">
+        <p className="mt-8 mb-12"style={isDark ? { backgroundColor: '#1f2937', color:"white" } : { backgroundColor: '#ffffff' }}>
           With the right knowledge, tools, and modern AI integration, anyone
           from any background can become a successful farmer. This chapter marks
           the beginning of your journey toward smart, scientific, and profitable
           farming.
         </p>
-
+        </section>
       </div>
-
-      <Footer />
-    </div>
+    </PageTemplate>
   )
 }
 

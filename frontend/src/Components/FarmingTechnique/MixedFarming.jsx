@@ -1,12 +1,16 @@
 import React from 'react'
-import Navbar from '../Navbar'
+import PageTemplate from '../ui/PageTemplate'
+import hero from '../../assets/farming.svg'
 
 function MixedFarming() {
+  const intro = 'Combining crop and livestock production for diversified and resilient farms.'
+
   return (
-    <div>
-      <Navbar/>
-      Mixed Farming
-    </div>
+    <PageTemplate title={'Mixed Farming'} >
+      <div>
+        Mixed Farming
+      </div>
+    </PageTemplate>
   )
 }
 
