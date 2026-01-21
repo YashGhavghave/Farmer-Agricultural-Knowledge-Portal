@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
+/* Move @variant outside of @theme */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* This ensures Tailwind looks for the .dark class on the html element */
-  @variant dark (&:where(.dark, .dark *));
+  /* Only custom properties and keyframes go here */
+  --animate-spin: spin 1s linear infinite;
 }
