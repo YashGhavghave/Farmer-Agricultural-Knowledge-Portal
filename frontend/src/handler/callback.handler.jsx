@@ -19,16 +19,21 @@ export default function GoogleCallback() {
           code_verifier,
         });
 
-        console.log("Google User:", res.data.user);
+        console.log("Login Success");
 
         // SAVE YOUR APP LOGIN TOKEN (IMPORTANT)
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("Name", res.data.user.name);
+        // if (res.data.user.avatar) {
+        //   localStorage.setItem("avatar", res.data.user.avatar);
+        // }
+        if (res.data.user.role) {
+          localStorage.setItem("role", res.data.user.role);
+        }
 
         navigate("/");
       } catch (err) {
         console.error("Google login failed:", err);
-        alert("Failed to login with Google");
       }
     }
 

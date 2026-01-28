@@ -1,220 +1,210 @@
-import React from "react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  FlaskConical, 
+  Sprout, 
+  Table2, 
+  AlertTriangle, 
+  CheckCircle2, 
+  Info,
+  TrendingUp,
+  Droplets
+} from "lucide-react";
 import PageTemplate from "./ui/PageTemplate";
-import hero from "../assets/fertilizer.svg";
+import Footer from "./footer";
+
+const TabButton = ({ label, value, activeTab, setActiveTab, icon: Icon }) => (
+  <button
+    onClick={() => setActiveTab(value)}
+    className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl transition-all duration-300 ${
+      activeTab === value
+        ? "bg-emerald-600 text-white shadow-lg scale-105"
+        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+    }`}
+  >
+    <Icon size={18} />
+    {label}
+  </button>
+);
+
+const NutrientBadge = ({ type, color, desc }) => (
+  <div className={`p-4 rounded-2xl border ${color} bg-white shadow-sm`}>
+    <h4 className="font-black text-xl mb-1">{type}</h4>
+    <p className="text-xs text-gray-500 leading-tight">{desc}</p>
+  </div>
+);
 
 function Fertilizers() {
-  const intro =
-    "Understand N-P-K, grades, types, and best practices for safe and efficient fertilizer use.";
+  const [activeTab, setActiveTab] = useState("basics");
 
   return (
-    <PageTemplate title={"Fertilizers: The Essential Guide"} >
-      {/* Existing content moved into template children */}
-
-      <p className="text-lg mb-8 leading-relaxed">
-        A fertilizer is any natural or synthetic material added to soil or plant tissues to supply essential nutrients required for plant growth. Fertilizers correct nutrient deficiencies, improve crop health, and enhance agricultural productivity.
-
-        Fertilizers supply essential nutrients that plants need for healthy
-        growth. Whether natural or synthetic, understanding fertilizer types,
-        nutrient ratios, and proper use is key to improving yield and maintaining
-        soil health.
-      </p>
-
-      {/*        * SECTION 1        * */}
-      <section className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">
-          1. Fertilizer Grade, Ratio, and N-P-K
-        </h2>
-
-        {/* 1.1 Grade */}
-        <h3 className="text-xl font-semibold mb-2">1.1 What Is Fertilizer Grade?</h3>
-        <p className="mb-4">
-          <b>Fertilizer Grade</b> refers to the guaranteed percentage of
-          <b> Nitrogen (N)</b>, <b>Phosphorus (P₂O₅)</b>, and
-          <b> Potassium (K₂O)</b> in a fertilizer.
-          <br />
-          Always listed in  N–P–K  order.
-        </p>
-
-        <p className="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
-          Example: A fertilizer bag labeled <b>28–28–0</b> contains
-          28% Nitrogen, 28% Phosphorus, and 0% Potassium .
-        </p>
-
-        {/* 1.3 Ratio */}
-        <h3 className="text-xl font-semibold mt-6 mb-2">1.3 Types of Fertilizers</h3>
-
-        <div className="bg-green-50 p-4 pl-6 mt-3 rounded-lg border-l-4 border-green-500">
-          <ul className="list-disc pl-6">
-            <li>Chemical (Inorganic) fertilizers</li>
-            <li>Organic fertilizers</li>
-            <li>Biofertilizers</li>
-            <li>Customized and fortified fertilizers</li>
-            <li>Slow-release and controlled-release fertilizers</li>
-          </ul>
-        </div>
-      </section>
-
-      {/*        * SECTION 2        * */}
-      <section className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">
-          2. Classification of Fertilizers
-        </h2>
-
-        {/* 2.1 Based on Composition */}
-        <h3 className="text-xl font-semibold mb-3">
-          2.1 Based on Nutrient Content (Composition)
-        </h3>
-
-        {/* TABLE */}
-        <div className="overflow-x-auto mb-6">
-          <table className="w-full border-collapse bg-white shadow rounded-lg">
-            <thead className="bg-green-600 text-white">
-              <tr>
-                <th className="p-3 text-left">Type</th>
-                <th className="p-3 text-left">Description</th>
-                <th className="p-3 text-left">Examples</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b hover:bg-gray-100">
-                <td className="p-3 font-semibold">Straight Fertilizers</td>
-                <td className="p-3">Supply only one primary plant nutrient.</td>
-                <td className="p-3">Urea, Ammonium Sulphate</td>
-              </tr>
-
-              <tr className="border-b hover:bg-gray-100">
-                <td className="p-3 font-semibold">Complex Fertilizers</td>
-                <td className="p-3">Contain 2–3 nutrients chemically combined.</td>
-                <td className="p-3">DAP, Nitrophosphates</td>
-              </tr>
-
-              <tr className="hover:bg-gray-100">
-                <td className="p-3 font-semibold">Mixed Fertilizers</td>
-                <td className="p-3">Physical mixtures of straight fertilizers.</td>
-                <td className="p-3">Custom NPK blends</td>
-              </tr>
-            </tbody>
-          </table>
+    <PageTemplate title="Nutrient Management & Fertilizers">
+      <div className="max-w-6xl mx-auto pb-20 space-y-12">
+        
+        {/* Modern Hero Intro */}
+        <div className="bg-gradient-to-br from-emerald-900 to-green-800 rounded-[3rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+          <div className="relative z-10 max-w-2xl">
+            <h2 className="text-4xl font-black mb-4">Feed the Soil, Fuel the Crop</h2>
+            <p className="text-emerald-100 text-lg leading-relaxed mb-6">
+              A scientific approach to fertilization involves understanding N-P-K ratios, 
+              correcting micronutrient gaps, and timing applications to match plant growth stages.
+            </p>
+            <div className="flex flex-wrap gap-4">
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/20">
+                  <CheckCircle2 size={16} className="text-emerald-400" />
+                  <span className="text-sm font-bold">NPK Optimized</span>
+               </div>
+               <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/20">
+                  <CheckCircle2 size={16} className="text-emerald-400" />
+                  <span className="text-sm font-bold">Soil Health Focused</span>
+               </div>
+            </div>
+          </div>
+          <div className="absolute right-0 bottom-0 opacity-10 translate-x-1/4 translate-y-1/4">
+            <FlaskConical size={400} />
+          </div>
         </div>
 
-        {/* 2.2 Physical Form */}
-        <h3 className="text-xl font-semibold mb-3">2.2 Based on Physical Form</h3>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Solid Fertilizers (Granules, Prills, Crystals)</li>
-          <li>Liquid Fertilizers (easy mixing, uniform application)</li>
-        </ul>
-      </section>
-
-      {/*        * SECTION 3        * */}
-      <section className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">
-          3. 🇮🇳 Key Fertilizer Grades Used in Indian Agriculture
-        </h2>
-
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse shadow">
-            <thead className="bg-green-600 text-white">
-              <tr>
-                <th className="p-3 text-left">Grade</th>
-                <th className="p-3 text-left">Use & Benefits</th>
-                <th className="p-3 text-left">When to Apply</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b hover:bg-gray-100">
-                <td className="p-3 font-semibold">10–26–26</td>
-                <td className="p-3">High P & K — boosts flowering and grain filling</td>
-                <td className="p-3">Basal / early stage</td>
-              </tr>
-
-              <tr className="border-b hover:bg-gray-100">
-                <td className="p-3 font-semibold">14–35–14</td>
-                <td className="p-3">Starter fertilizer — strong root establishment</td>
-                <td className="p-3">Basal application</td>
-              </tr>
-
-              <tr className="border-b hover:bg-gray-100">
-                <td className="p-3 font-semibold">Urea (46–0–0)</td>
-                <td className="p-3">Concentrated nitrogen source for vegetative growth</td>
-                <td className="p-3">Top dressing</td>
-              </tr>
-
-              <tr className="hover:bg-gray-100">
-                <td className="p-3 font-semibold">DAP (18–46–0)</td>
-                <td className="p-3">High phosphorus & good nitrogen — ideal for roots</td>
-                <td className="p-3">Basal application</td>
-              </tr>
-            </tbody>
-          </table>
+        {/* Navigation */}
+        <div className="flex gap-4 flex-wrap justify-center border-b border-gray-100 pb-8">
+          <TabButton label="The N-P-K Science" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} icon={FlaskConical} />
+          <TabButton label="Indian Grades" value="grades" activeTab={activeTab} setActiveTab={setActiveTab} icon={Table2} />
+          <TabButton label="Deficiency Guide" value="deficiency" activeTab={activeTab} setActiveTab={setActiveTab} icon={AlertTriangle} />
         </div>
-      </section>
 
-      {/*        * SECTION 4        * */}
-      <section className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">
-          4. Detailed Classification by Nutrient
-        </h2>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {activeTab === "basics" && (
+              <div className="space-y-10">
+                <div className="grid md:grid-cols-3 gap-6">
+                  <NutrientBadge type="N" color="border-blue-200 text-blue-600" desc="Nitrogen: Leaf growth and green pigment (Chlorophyll)." />
+                  <NutrientBadge type="P" color="border-orange-200 text-orange-600" desc="Phosphorus: Root architecture and energy transfer (ATP)." />
+                  <NutrientBadge type="K" color="border-purple-200 text-purple-600" desc="Potassium: Water regulation and disease resistance." />
+                </div>
 
-        <h3 className="text-xl font-semibold mt-4 mb-2">A. Nitrogenous Fertilizers</h3>
-        <ul className="list-disc pl-6 mb-4 space-y-1">
-          <li>Ammonium Sulphate</li>
-          <li>CAN (Calcium Ammonium Nitrate)</li>
-          <li>Urea (Most used in India)</li>
-        </ul>
+                <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col lg:flex-row gap-10">
+                   <div className="flex-1 space-y-6">
+                      <h3 className="text-3xl font-black text-gray-900">Decoding Fertilizer Grade</h3>
+                      <p className="text-gray-600">The <b>Grade</b> is a mandatory label showing the percentage of nutrients. For example, <b>DAP (18-46-0)</b> contains zero Potassium but is heavily loaded with Phosphorus for early rooting.</p>
+                      <div className="bg-emerald-50 p-6 rounded-2xl border-l-4 border-emerald-500">
+                         <h4 className="font-bold text-emerald-800 mb-2 flex items-center gap-2"><Info size={18}/> Pro Tip: Solubility</h4>
+                         <p className="text-sm text-emerald-700 leading-relaxed">Not all phosphorus is equal. Ensure your fertilizer has high <b>Water Soluble Phosphorus</b> for immediate plant uptake.</p>
+                      </div>
+                   </div>
+                   <div className="lg:w-2/5 bg-gray-50 rounded-3xl p-6 flex flex-col items-center justify-center">
+                      <h4 className="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-4">Fertilizer Grade Anatomy</h4>
+                      
+                   </div>
+                </div>
+              </div>
+            )}
 
-        <h3 className="text-xl font-semibold mt-4 mb-2">B. Phosphatic Fertilizers</h3>
-        <ul className="list-disc pl-6 mb-4 space-y-1">
-          <li>Single Super Phosphate (SSP)</li>
-          <li>Triple Super Phosphate (TSP)</li>
-          <li>DAP</li>
-        </ul>
+            {activeTab === "grades" && (
+              <div className="space-y-8">
+                <h3 className="text-3xl font-black text-center text-gray-900 mb-8">Standard Indian Fertilizer Grades</h3>
+                <div className="overflow-hidden rounded-[2.5rem] border border-gray-100 shadow-xl">
+                  <table className="w-full text-left bg-white">
+                    <thead className="bg-emerald-600 text-white">
+                      <tr>
+                        <th className="p-6 font-bold">Grade (N-P-K)</th>
+                        <th className="p-6 font-bold">Primary Use Case</th>
+                        <th className="p-6 font-bold">Best Stage</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {[
+                        { grade: "Urea (46-0-0)", use: "Rapid vegetative growth", stage: "Top Dressing" },
+                        { grade: "DAP (18-46-0)", use: "Root development & branching", stage: "Basal (Sowing)" },
+                        { grade: "10-26-26", use: "Grain weight & flowering", stage: "Pre-flowering" },
+                        { grade: "19-19-19", use: "Balanced all-purpose nutrition", stage: "Foliar Spray" },
+                      ].map((row, i) => (
+                        <tr key={i} className="hover:bg-emerald-50/50 transition-colors">
+                          <td className="p-6 font-black text-emerald-700">{row.grade}</td>
+                          <td className="p-6 text-gray-600">{row.use}</td>
+                          <td className="p-6 font-bold text-gray-900 italic">{row.stage}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
 
-        <h3 className="text-xl font-semibold mt-4 mb-2">C. Potassic Fertilizers</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>MOP (Muriate of Potash)</li>
-          <li>SOP (Sulphate of Potash)</li>
-        </ul>
-      </section>
+            {activeTab === "deficiency" && (
+              <div className="grid lg:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-[2.5rem] border border-red-50 shadow-sm">
+                  <h3 className="text-2xl font-black text-red-800 mb-6 flex items-center gap-2">
+                    <AlertTriangle /> Common Deficiencies
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="flex gap-4">
+                      <div className="w-2 h-auto bg-blue-500 rounded-full" />
+                      <div>
+                        <h4 className="font-bold">Nitrogen (N)</h4>
+                        <p className="text-sm text-gray-500 italic">Uniform yellowing of older leaves starting from the tip.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="w-2 h-auto bg-orange-500 rounded-full" />
+                      <div>
+                        <h4 className="font-bold">Phosphorus (P)</h4>
+                        <p className="text-sm text-gray-500 italic">Purple or reddish tint on leaves; stunted root growth.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="w-2 h-auto bg-purple-500 rounded-full" />
+                      <div>
+                        <h4 className="font-bold">Potassium (K)</h4>
+                        <p className="text-sm text-gray-500 italic">"Browning" or scorching of leaf margins (edges).</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-100 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center">
+                   <h4 className="text-sm font-bold text-gray-400 mb-4 uppercase tracking-widest">Visual Identification Chart</h4>
+                   
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
 
-      {/*        * SECTION 5        * */}
-      <section className="bg-white p-6 rounded-2xl shadow mb-10">
-        <h2 className="text-2xl font-semibold text-green-800 mb-4">
-          5. Secondary & Micronutrient Fertilizers
-        </h2>
-
-        <h3 className="text-xl font-semibold mb-2">Secondary Nutrients</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Magnesium Sulphate</li>
-          <li>Calcium Chloride</li>
-          <li>Sulphur</li>
-        </ul>
-
-        <h3 className="text-xl font-semibold mt-6 mb-2">Micronutrients</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Zinc Sulphate</li>
-          <li>Ferrous Sulphate</li>
-          <li>Borax</li>
-          <li>Manganese Sulphate</li>
-        </ul>
-      </section>
-
-      {/*        * NEXT STEPS        * */}
-      <section className="bg-green-100 p-6 rounded-2xl shadow">
-        <h2 className="text-2xl font-semibold text-green-800 mb-3">
-          💡 Your Next Step: Precision Fertilizer Application
-        </h2>
-        <p className="mb-4">
-          To maximize fertilizer efficiency, always perform a <b>Soil Test</b>.
-          This tells you exactly what nutrients your soil lacks.
-        </p>
-
-        <button
-          className="bg-green-700 text-white px-6 py-2 rounded-lg shadow hover:bg-green-800"
-          onClick={() => alert("Redirecting to soil test details...")}
-        >
-          Check Soil Requirements
-        </button>
-      </section>
+        {/* Next Step Section */}
+        <div className="bg-white p-10 rounded-[3.5rem] shadow-xl border border-emerald-100 relative overflow-hidden">
+           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="max-w-xl">
+                 <h3 className="text-3xl font-black text-gray-900 mb-4">Ready to Apply?</h3>
+                 <p className="text-gray-600 leading-relaxed mb-6">
+                   Using the right fertilizer is only half the battle. You must calculate the <b>Rate</b> based on your soil health card to avoid "Chemical Overload" which kills soil microbes.
+                 </p>
+                 <button className="flex items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-lg hover:shadow-emerald-200">
+                    Get Soil Test Guidelines <TrendingUp size={20} />
+                 </button>
+              </div>
+              <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 flex gap-6">
+                 <div className="text-center">
+                    <Droplets className="mx-auto text-emerald-600 mb-2" />
+                    <p className="text-[10px] font-bold text-emerald-800 uppercase">Solubility</p>
+                 </div>
+                 <div className="text-center">
+                    <TrendingUp className="mx-auto text-emerald-600 mb-2" />
+                    <p className="text-[10px] font-bold text-emerald-800 uppercase">Yield Boost</p>
+                 </div>
+                 <div className="text-center">
+                    <Sprout className="mx-auto text-emerald-600 mb-2" />
+                    <p className="text-[10px] font-bold text-emerald-800 uppercase">Organic</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+      <Footer />
     </PageTemplate>
   );
 }

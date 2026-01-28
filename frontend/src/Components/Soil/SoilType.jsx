@@ -1,183 +1,186 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Info, 
+  Layers, 
+  TrendingUp, 
+  Droplets, 
+  Maximize, 
+  CheckCircle2, 
+  Search 
+} from 'lucide-react'
 import Navbar from '../Navbar'
 import PageTemplate from '../ui/PageTemplate'
-import hero from '../../assets/farming.svg'
 import Footer from '../footer'
 
-function SoilType() {
-  const intro = 'Understanding soil types - clay, silt, sand, and loam - helps choose crops and management practices.'
-  const [activeTab, setActiveTab] = useState('basics')
+const TabButton = ({ label, value, activeTab, setActiveTab, icon: Icon }) => (
+  <button
+    onClick={() => setActiveTab(value)}
+    className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all duration-300 ${
+      activeTab === value
+        ? 'bg-blue-600 text-white shadow-lg scale-105'
+        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+    }`}
+  >
+    <Icon size={18} />
+    {label}
+  </button>
+)
 
-  const basics = [
-    {
-      title: 'Soil Texture Basics',
-      content: 'Soil consists of sand (coarse, drains fast), silt (medium, balanced), and clay (fine, holds water). The ratio determines soil type and water-holding capacity.'
-    },
-    {
-      title: 'Five Main Soil Types',
-      content: 'Sandy (55% sand), Silt (>50% silt), Clay (40% clay), Loam (balanced mix), Clay loam (35-40% clay). Most productive is silt loam - balanced properties.'
-    },
-    {
-      title: 'Identifying Your Soil Type',
-      content: 'Squeeze test: Sandy feels gritty, clay is sticky and forms a ball, loam holds shape loosely. Or get soil test done by lab.'
-    }
-  ]
-
-  const intermediate = [
-    {
-      title: 'Sandy Soils',
-      content: 'Drains too fast, loses nutrients, low water-holding capacity. Crops: groundnut, watermelon. Amendment: add organic matter to improve water retention.',
-      tips: ['Water holding: 6-10%', 'Easy to work but nutrient loss', 'Needs frequent watering', 'Add 5+ tons compost/ha', 'Use slow-release fertilizers', 'Mulching essential']
-    },
-    {
-      title: 'Clay Soils',
-      content: 'Poor drainage, compacts easily, difficult to work. Crops: rice, chickpea. Amendment: add organic matter and sand to improve drainage.',
-      tips: ['Water holding: 30-50%', 'Waterlogging risk', 'Hard when dry, sticky when wet', 'Add gypsum for dispersion', 'Deep ploughing in summer', 'Avoid compaction']
-    },
-    {
-      title: 'Loam Soils',
-      content: 'Perfect balance - good drainage and water-holding capacity. Most fertile. Crops: any crop performs well. Amendment: maintain with organic matter.',
-      tips: ['Water holding: 15-25%', 'Ideal for most crops', 'Balanced nutrients', 'Maintain 2-3% organic matter', 'Rotate crops annually', 'Minimal amendment needed']
-    }
-  ]
-
-  const advanced = [
-    {
-      title: 'Soil Structure Improvement',
-      content: 'Aggregate stability (soil crumbs) more important than texture. Organic matter builds stable aggregates. Use compost, manure, crop residues.',
-      strategies: [
-        'Stable aggregates improve aeration',
-        'Water infiltration 2-3x better',
-        'Earthworms create macropores',
-        'Microbial glues bind soil particles'
-      ]
-    },
-    {
-      title: 'Crop-Soil Matching',
-      content: 'Match crops to soil type for best results. Deep-rooted crops for sandy, shallow-rooted for clay, anything for loam.',
-      strategies: [
-        'Sandy: Groundnut, watermelon, millet',
-        'Clay: Rice, chickpea, sugarcane',
-        'Loam: Wheat, maize, cotton',
-        'Silt loam: All crops perform best'
-      ]
-    },
-    {
-      title: 'Advanced Soil Testing & Remediation',
-      content: 'Beyond NPK, analyze soil biology, water stability, and porosity. Customize management for specific soil properties.',
-      strategies: [
-        'Microbial biomass testing',
-        'Enzymatic activity for health',
-        'Aggregate stability tests',
-        'Hydraulic conductivity measurement'
-      ]
-    }
-  ]
-
-  const TabButton = ({ label, value }) => (
-    <button
-      onClick={() => setActiveTab(value)}
-      className={`px-6 py-3 font-semibold rounded-lg transition-all ${
-        activeTab === value
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-      }`}
-    >
-      {label}
-    </button>
-  )
-
-  const ContentCard = ({ title, content, tips, strategies }) => (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-blue-500">
-      <h3 className="text-2xl font-bold text-blue-700 mb-3">{title}</h3>
-      <p className="text-gray-700 mb-4 whitespace-pre-wrap">{content}</p>
-      {tips && (
-        <div className="bg-blue-50 p-4 rounded">
-          <h4 className="font-semibold text-blue-700 mb-2">💡 Key Characteristics:</h4>
-          <ul className="list-disc list-inside space-y-1 text-gray-700">
-            {tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
-          </ul>
-        </div>
-      )}
-      {strategies && (
-        <div className="bg-cyan-50 p-4 rounded mt-3">
-          <h4 className="font-semibold text-cyan-700 mb-2">🎯 Advanced Strategies:</h4>
-          <ul className="list-disc list-inside space-y-1 text-gray-700">
-            {strategies.map((strategy, idx) => <li key={idx}>{strategy}</li>)}
-          </ul>
-        </div>
-      )}
+const ContentCard = ({ title, content, tips, strategies }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-white rounded-3xl shadow-sm p-8 mb-6 border border-blue-50 hover:shadow-md transition-shadow"
+  >
+    <div className="flex items-start gap-4">
+      <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
+        <Layers size={24} />
+      </div>
+      <div className="flex-1">
+        <h3 className="text-2xl font-black text-gray-900 mb-3">{title}</h3>
+        <p className="text-gray-600 leading-relaxed mb-6">{content}</p>
+        
+        {tips && (
+          <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+            <h4 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <CheckCircle2 size={18} /> Management Guidelines:
+            </h4>
+            <ul className="grid md:grid-cols-2 gap-3 text-sm text-gray-700">
+              {tips.map((tip, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="text-blue-400">•</span> {tip}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {strategies && (
+          <div className="mt-4 bg-cyan-50/50 p-6 rounded-2xl border border-cyan-100">
+            <h4 className="font-bold text-cyan-800 mb-3 flex items-center gap-2">
+              <TrendingUp size={18} /> Optimization Strategies:
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {strategies.map((strategy, idx) => (
+                <li key={idx} className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  {strategy}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
-  )
+  </motion.div>
+)
+
+function SoilType() {
+  const [activeTab, setActiveTab] = useState('basics')
 
   return (
     <>
       <Navbar />
-      <PageTemplate title={'Soil Types'} >
-        <div className="space-y-8">
-          <div className="flex gap-4 flex-wrap">
-            <TabButton label="Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} />
-            <TabButton label="Intermediate" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} />
-            <TabButton label="Advanced" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} />
+      <PageTemplate title="Soil Classification & Health">
+        <div className="max-w-6xl mx-auto space-y-12 pb-20">
+          
+          {/* Navigation Tabs */}
+          <div className="flex gap-4 flex-wrap border-b border-gray-100 pb-6">
+            <TabButton label="The Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} icon={Info} />
+            <TabButton label="Specific Types" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} icon={Maximize} />
+            <TabButton label="Advanced Health" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} icon={Search} />
           </div>
 
-          <div className="mt-6">
-            {activeTab === 'basics' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Beginner Level</h2>
-                {basics.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === 'basics' && (
+                <div className="grid lg:grid-cols-2 gap-12 items-center mb-12">
+                  <div className="space-y-6">
+                    <h2 className="text-4xl font-black text-gray-900 leading-tight">Architecture of the Earth</h2>
+                    <p className="text-lg text-gray-600 leading-relaxed">
+                      Soil isn't just "dirt"—it's a complex matrix of minerals and organic matter. Understanding your <b>Soil Texture</b> allows you to predict how water moves and how much fertilizer your land can hold before it leaches away.
+                    </p>
+                  </div>
+                  <div className="bg-white p-6 rounded-[3rem] shadow-xl border border-blue-50">
+                    <h4 className="text-center font-bold text-xs uppercase tracking-widest mb-4 text-blue-600">The Soil Texture Triangle</h4>
+                    
+                    <p className="text-[10px] text-gray-400 mt-2 text-center italic">Use this chart to classify your soil based on lab percentages of Sand, Silt, and Clay.</p>
+                  </div>
+                </div>
+              )}
 
-            {activeTab === 'intermediate' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Intermediate Level</h2>
-                {intermediate.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
+              {activeTab === 'intermediate' && (
+                <div className="mb-12">
+                  <div className="bg-blue-900 text-white p-10 rounded-[3rem] shadow-2xl mb-12 flex flex-col md:flex-row gap-8 items-center">
+                    <div className="flex-1">
+                      <h3 className="text-3xl font-black mb-4 flex items-center gap-3">
+                        <Droplets className="text-blue-400" /> The Field "Feel" Test
+                      </h3>
+                      <p className="opacity-80 text-sm leading-relaxed mb-4">
+                        Don't have a lab report? Use the ribbon test. Moistened soil that forms a long, flexible ribbon is high in <b>clay</b>, while soil that falls apart is <b>sandy</b>.
+                      </p>
+                      
+                    </div>
+                  </div>
+                </div>
+              )}
 
-            {activeTab === 'advanced' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Advanced Level</h2>
-                {advanced.map((item, idx) => <ContentCard key={idx} {...item} />)}
+              {/* Data Rendering */}
+              <div className="space-y-4">
+                {activeTab === 'basics' && basics.map((item, idx) => <ContentCard key={idx} {...item} />)}
+                {activeTab === 'intermediate' && intermediate.map((item, idx) => <ContentCard key={idx} {...item} />)}
+                {activeTab === 'advanced' && advanced.map((item, idx) => <ContentCard key={idx} {...item} />)}
               </div>
-            )}
-          </div>
+            </motion.div>
+          </AnimatePresence>
 
-          <div className="bg-linear-to-r from-blue-50 to-cyan-50 p-8 rounded-lg border border-blue-200">
-            <h3 className="text-2xl font-bold text-blue-800 mb-4">🌾 Soil Type Benefits & Challenges</h3>
+          {/* Comparison Table Section */}
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-10 rounded-[3rem] border border-blue-200">
+            <h3 className="text-2xl font-black text-blue-800 mb-6 flex items-center gap-3">
+              🌾 Physical Properties Comparison
+            </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-gray-700">
-                <thead className="bg-blue-100">
+                <thead className="bg-blue-600 text-white">
                   <tr>
-                    <th className="p-3 text-left font-bold">Type</th>
-                    <th className="p-3 text-left">Water Holding</th>
-                    <th className="p-3 text-left">Best For</th>
-                    <th className="p-3 text-left">Main Issue</th>
+                    <th className="p-4 text-left rounded-tl-2xl">Soil Type</th>
+                    <th className="p-4 text-left">Drainage Speed</th>
+                    <th className="p-4 text-left">Nutrient Retention</th>
+                    <th className="p-4 text-left rounded-tr-2xl">Best Crops</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="p-3 font-semibold">Sandy</td>
-                    <td>Low (6-10%)</td>
-                    <td>Groundnut, Millet</td>
-                    <td>Loses nutrients & water</td>
+                <tbody className="bg-white/50">
+                  <tr className="border-b border-blue-100">
+                    <td className="p-4 font-bold">Sandy</td>
+                    <td className="p-4">Very High</td>
+                    <td className="p-4 text-red-500 font-semibold">Low</td>
+                    <td className="p-4">Tubers, Millets</td>
                   </tr>
-                  <tr className="border-b">
-                    <td className="p-3 font-semibold">Clay</td>
-                    <td>High (30-50%)</td>
-                    <td>Rice, Chickpea</td>
-                    <td>Poor drainage, hard work</td>
+                  <tr className="border-b border-blue-100">
+                    <td className="p-4 font-bold">Clay</td>
+                    <td className="p-4 text-red-500 font-semibold">Low (Slow)</td>
+                    <td className="p-4 text-green-600 font-semibold">High</td>
+                    <td className="p-4">Rice, Cotton</td>
                   </tr>
-                  <tr>
-                    <td className="p-3 font-semibold">Loam</td>
-                    <td>Medium (15-25%)</td>
-                    <td>All crops</td>
-                    <td>None - ideal soil</td>
+                  <tr className="bg-blue-50/50">
+                    <td className="p-4 font-bold">Loam</td>
+                    <td className="p-4 text-green-600 font-semibold">Balanced</td>
+                    <td className="p-4 text-green-600 font-semibold">Excellent</td>
+                    <td className="p-4 italic">Almost everything</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p className="mt-6 text-center text-blue-700 font-bold text-sm">
+              💡 Hint: Regardless of your type, adding Organic Matter (Compost) always improves the soil's score.
+            </p>
           </div>
         </div>
       </PageTemplate>

@@ -16,12 +16,36 @@ function Navbar() {
     try {
       localStorage.removeItem('token');
       localStorage.removeItem('Name');
+      localStorage.removeItem('avatar');
+      localStorage.removeItem('role');
       localStorage.removeItem('code_verifier');
       navigate('/login');
     } catch (err) {
       alert("Cannot logout - ", err.message);
     }
   };
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return setIsAdmin(false);
+    try {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        const payload = parts[1].replace(/-/g,'+').replace(/_/g,'/');
+        const json = decodeURIComponent(atob(payload).split('').map(function(c){
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const p = JSON.parse(json);
+        setIsAdmin(!!(p && p.role === 'admin'));
+        if (p && p.role) localStorage.setItem('role', p.role);
+      }
+    } catch (err) {
+      console.error('Navbar token decode failed', err);
+      setIsAdmin(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!localStorage.getItem('token')) {
@@ -108,6 +132,11 @@ function Navbar() {
         {/* Right Section: Theme Toggle & Profile */}
         <div className="flex items-center gap-4">
           {/* Theme Toggle Button */}
+            {isAdmin && (
+              <Link to="/admin" className={`px-3 py-2 rounded-lg transition-all duration-200 text-sm ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                Admin
+              </Link>
+            )}
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg transition-all duration-200 ${
@@ -124,13 +153,21 @@ function Navbar() {
           <div className="relative cursor-pointer" ref={dropdownRef}>
             <button
               onClick={toggleProfile}
-              className={`h-10 w-10 rounded-full font-bold flex items-center justify-center transition-all duration-200 text-white
+              className={`h-10 w-10 rounded-full font-bold flex items-center justify-center overflow-hidden transition-all duration-200 text-white
                 ${isDark 
                   ? 'bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-lg hover:scale-105' 
                   : 'bg-gradient-to-br from-green-500 to-emerald-600 hover:shadow-lg hover:scale-105'
                 }`}
             >
-              {loginChar("Name")}
+              {localStorage.getItem('avatar') ? (
+                <img
+                  src={localStorage.getItem('avatar')}
+                  alt={localStorage.getItem('Name') || 'avatar'}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className={`${isDark ? 'text-white' : 'text-black'}`}>{loginChar("Name")}</span>
+              )}
             </button>
 
             {profile === "logout" && (

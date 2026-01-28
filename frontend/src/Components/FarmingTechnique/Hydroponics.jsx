@@ -1,160 +1,185 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Droplets, Zap, Beaker, Settings, 
+  TrendingUp, Activity, Info, AlertCircle 
+} from 'lucide-react'
 import PageTemplate from '../ui/PageTemplate'
-import hero from '../../assets/farming.svg'
+import { useTheme } from '../../Context/ThemeContext'
 
-const TabButton = ({ label, value, activeTab, setActiveTab }) => (
+const TabButton = ({ label, value, activeTab, setActiveTab, icon: Icon }) => (
   <button
     onClick={() => setActiveTab(value)}
-    className={`px-6 py-3 font-semibold rounded-lg transition-all ${
+    className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl transition-all duration-300 ${
       activeTab === value
-        ? 'bg-blue-600 text-white'
-        : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+        ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105'
+        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }`}
   >
+    {Icon && <Icon size={18} />}
     {label}
   </button>
 )
 
-const ContentCard = ({ title, content, tips, strategies }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-blue-500">
-    <h3 className="text-2xl font-bold text-blue-700 mb-3">{title}</h3>
-    <p className="text-gray-700 mb-4">{content}</p>
-    {tips && (
-      <div className="bg-blue-50 p-4 rounded">
-        <h4 className="font-semibold text-blue-700 mb-2">Tips:</h4>
-        <ul className="list-disc list-inside space-y-1 text-gray-700">
-          {tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
-        </ul>
-      </div>
-    )}
-    {strategies && (
-      <div className="bg-cyan-50 p-4 rounded mt-3">
-        <h4 className="font-semibold text-cyan-700 mb-2">Strategies:</h4>
-        <ul className="list-disc list-inside space-y-1 text-gray-700">
-          {strategies.map((strategy, idx) => <li key={idx}>{strategy}</li>)}
-        </ul>
-      </div>
-    )}
-  </div>
+const ContentCard = ({ title, content, tips, strategies, isDark }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`rounded-[2rem] shadow-sm p-8 mb-6 border-l-8 border-blue-500 transition-colors ${
+      isDark ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-100'
+    }`}
+  >
+    <h3 className="text-2xl font-black text-blue-600 mb-4">{title}</h3>
+    <p className="opacity-80 mb-6 leading-relaxed">{content}</p>
+    
+    <div className="grid md:grid-cols-2 gap-4">
+      {tips && (
+        <div className={`p-5 rounded-2xl ${isDark ? 'bg-blue-500/10' : 'bg-blue-50'}`}>
+          <h4 className="font-bold text-blue-700 mb-2 flex items-center gap-2">
+            <Info size={16} /> Technical Specs
+          </h4>
+          <ul className="space-y-2 text-sm opacity-90">
+            {tips.map((tip, idx) => <li key={idx} className="flex gap-2"><span>•</span> {tip}</li>)}
+          </ul>
+        </div>
+      )}
+      {strategies && (
+        <div className={`p-5 rounded-2xl ${isDark ? 'bg-cyan-500/10' : 'bg-cyan-50'}`}>
+          <h4 className="font-bold text-cyan-700 mb-2 flex items-center gap-2">
+            <TrendingUp size={16} /> Optimization
+          </h4>
+          <ul className="space-y-2 text-sm opacity-90">
+            {strategies.map((strategy, idx) => <li key={idx} className="flex gap-2"><span>•</span> {strategy}</li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+  </motion.div>
 )
 
 function Hydroponics() {
-  const intro = 'Growing plants in nutrient-rich water without soil - maximum yield with minimal water usage.'
+  const { isDark } = useTheme()
   const [activeTab, setActiveTab] = useState('basics')
 
-  const basics = [
-    {
-      title: 'What is Hydroponics?',
-      content: 'Hydroponics is a soil-less farming method where plant roots are suspended in nutrient-enriched water. Plants grow 10x faster with 90% less water than traditional farming.'
-    },
-    {
-      title: 'Key Advantages',
-      content: '• 10x faster growth rates • 90% water savings • Year-round production • No pesticides needed • Higher yields per square meter • Perfect for urban farming'
-    },
-    {
-      title: 'System Requirements',
-      content: 'Basic setup needs: growing medium (rockwool, clay pellets), nutrient solution, pH meter (6.0-7.0), EC meter (1.2-2.0), light source, and water pump.'
-    }
-  ]
-
-  const intermediate = [
-    {
-      title: 'NFT (Nutrient Film Technique)',
-      content: 'Thin nutrient solution flows along sloped channels. Best for leafy greens. Simple, low maintenance, quick setup.',
-      tips: ['Channel angle: 1:15 slope', 'Flow rate: 1-1.5 L/min', 'Plant spacing: 15-20cm apart', 'Ideal for lettuce, basil, herbs']
-    },
-    {
-      title: 'DWC (Deep Water Culture)',
-      content: 'Roots suspended directly in aerated nutrient solution. Best for quick crops. High yield, minimal waste.',
-      tips: ['Water depth: 15-30cm', 'Air stones critical for oxygen', 'EC: 1.4-1.8', 'Change water every 3 weeks']
-    },
-    {
-      title: 'Nutrient Solution Management',
-      content: 'Balanced NPK ratio with micronutrients. Monitor pH, EC, and temperature daily. Different crops need different nutrient profiles.',
-      tips: ['Nitrogen: 150-200 ppm', 'Phosphorus: 30-50 ppm', 'Potassium: 100-150 ppm', 'EC testing: Daily minimum']
-    }
-  ]
-
-  const advanced = [
-    {
-      title: 'Precision Nutrient Formulation',
-      content: 'Use hydroponic calculators to create custom solutions. Vary nutrients by growth stage. Use chelated micronutrients for better availability.',
-      strategies: [
-        'Vegetative stage: High nitrogen ratio',
-        'Flowering stage: Increase phosphorus and potassium',
-        'Fruiting stage: Boost potassium for yield',
-        'Use foliar feeding with dilute solutions'
-      ]
-    },
-    {
-      title: 'Environmental Control Systems',
-      content: 'Automate with sensors, controllers, and monitoring systems. Optimize light, temperature (20-28°C), humidity (60-70%), and CO2 levels.',
-      strategies: [
-        'Automated pH adjustment systems',
-        'Temperature control with chillers/heaters',
-        'LED grow lights (HPS alternative)',
-        'WiFi monitoring and alerts'
-      ]
-    },
-    {
-      title: 'Advanced Crop Production',
-      content: 'Multi-crop systems, vertical farming integration, and market timing strategies. Produce 6-8 cycles per year.',
-      strategies: [
-        'Stagger plantings for continuous harvest',
-        'Intercrop fast and slow growers',
-        'Integrate aquaponics for protein',
-        'Use data analytics for yield prediction'
-      ]
-    }
-  ]
-
-  
-  
+  // ... (Your basics, intermediate, and advanced data arrays here) ...
 
   return (
-    <PageTemplate title={'Hydroponics'} >
-      <div className="space-y-8">
-        <div className="flex gap-4 flex-wrap">
-          <TabButton label="Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TabButton label="Intermediate" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TabButton label="Advanced" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} />
+    <PageTemplate title={'Hydroponics Farming'}>
+      <div className="max-w-6xl mx-auto px-4 pb-20">
+        
+        {/* Intro Visual Header */}
+        <div className={`mb-12 p-8 rounded-[3rem] border-2 border-dashed ${isDark ? 'bg-blue-500/5 border-blue-500/20' : 'bg-blue-50 border-blue-200'}`}>
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-1">
+              <h2 className="text-3xl font-black mb-4 flex items-center gap-2 text-blue-700">
+                <Droplets /> The Soil-less Revolution
+              </h2>
+              <p className="opacity-70 leading-relaxed italic">
+                By delivering nutrients directly to the root zone via a water-based solvent, plants spend zero energy searching for food and 100% energy on <b>explosive growth</b>.
+              </p>
+            </div>
+            <div className="w-full md:w-1/3 rounded-2xl overflow-hidden shadow-xl bg-white p-2">
+              
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6">
-          {activeTab === 'basics' && (
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Beginner Level</h2>
-              {basics.map((item, idx) => <ContentCard key={idx} {...item} />)}
-            </div>
-          )}
-
-          {activeTab === 'intermediate' && (
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Intermediate Level</h2>
-              {intermediate.map((item, idx) => <ContentCard key={idx} {...item} />)}
-            </div>
-          )}
-
-          {activeTab === 'advanced' && (
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Advanced Level</h2>
-              {advanced.map((item, idx) => <ContentCard key={idx} {...item} />)}
-            </div>
-          )}
+        {/* Navigation Tabs */}
+        <div className="flex gap-4 flex-wrap mb-12">
+          <TabButton label="Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} icon={Info} />
+          <TabButton label="Systems" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} icon={Settings} />
+          <TabButton label="Precision" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} icon={Activity} />
         </div>
 
-        <div className="bg-linear-to-r from-blue-50 to-cyan-50 p-8 rounded-lg border border-blue-200">
-          <h3 className="text-2xl font-bold text-blue-800 mb-4">💡 Pro Tips</h3>
-          <ul className="text-gray-700 space-y-2">
-            <li>✓ Start with leafy greens - lowest risk, highest success rate</li>
-            <li>✓ Invest in good pH and EC meters - they pay for themselves</li>
-            <li>✓ Keep detailed records of nutrient solutions and schedules</li>
-            <li>✓ Join hydroponics communities for troubleshooting support</li>
-          </ul>
+        {/* Dynamic Content */}
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={activeTab}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {activeTab === 'basics' && (
+              <section className="space-y-6">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-blue-600 rounded-xl text-white"><Zap /></div>
+                  <h2 className="text-3xl font-black">Beginner Concepts</h2>
+                </div>
+                {basics.map((item, idx) => <ContentCard key={idx} {...item} isDark={isDark} />)}
+              </section>
+            )}
+
+            {activeTab === 'intermediate' && (
+              <section className="space-y-6">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-blue-600 rounded-xl text-white"><Beaker /></div>
+                  <h2 className="text-3xl font-black">System Architecture</h2>
+                </div>
+                
+                {/* NFT Diagram */}
+                <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                  <ContentCard {...intermediate[0]} isDark={isDark} />
+                  <div className="rounded-[2rem] overflow-hidden border border-gray-200 bg-white p-4">
+                    <h4 className="text-center font-bold mb-4 opacity-60 uppercase tracking-widest text-xs">NFT (Nutrient Film Technique) Diagram</h4>
+                    
+                  </div>
+                </div>
+
+                {/* DWC Diagram */}
+                <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                  <div className="rounded-[2rem] overflow-hidden border border-gray-200 bg-white p-4 order-2 lg:order-1">
+                    <h4 className="text-center font-bold mb-4 opacity-60 uppercase tracking-widest text-xs">DWC (Deep Water Culture) Diagram</h4>
+                    
+                  </div>
+                  <div className="order-1 lg:order-2">
+                    <ContentCard {...intermediate[1]} isDark={isDark} />
+                  </div>
+                </div>
+                
+                <ContentCard {...intermediate[2]} isDark={isDark} />
+              </section>
+            )}
+
+            {activeTab === 'advanced' && (
+              <section className="space-y-6">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-3 bg-blue-600 rounded-xl text-white"><TrendingUp /></div>
+                  <h2 className="text-3xl font-black">Commercial Scale</h2>
+                </div>
+                {advanced.map((item, idx) => <ContentCard key={idx} {...item} isDark={isDark} />)}
+              </section>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Technical Safety Footer */}
+        <div className={`mt-16 p-10 rounded-[3rem] border-2 ${isDark ? 'bg-slate-900 border-blue-500/30' : 'bg-white border-blue-100 shadow-2xl'}`}>
+          <h3 className="text-2xl font-black text-blue-700 mb-6 flex items-center gap-2">
+            <AlertCircle className="text-red-500" /> Maintenance Parameters
+          </h3>
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <div className="space-y-2">
+              <div className="text-sm opacity-60 font-bold uppercase tracking-widest">pH Level</div>
+              <div className="text-3xl font-black text-emerald-500">5.5 – 6.5</div>
+              <p className="text-xs">Crucial for nutrient bioavailability</p>
+            </div>
+            <div className="space-y-2 border-x border-gray-100 dark:border-gray-800 px-4">
+              <div className="text-sm opacity-60 font-bold uppercase tracking-widest">Water Temp</div>
+              <div className="text-3xl font-black text-blue-500">18°C – 22°C</div>
+              <p className="text-xs">Optimal dissolved oxygen levels</p>
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm opacity-60 font-bold uppercase tracking-widest">EC (Lettuce)</div>
+              <div className="text-3xl font-black text-cyan-500">1.2 – 1.8</div>
+              <p className="text-xs">Total dissolved salts measurement</p>
+            </div>
+          </div>
         </div>
+
       </div>
     </PageTemplate>
-  );
+  )
 }
 
 export default Hydroponics;

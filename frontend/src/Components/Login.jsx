@@ -1,224 +1,235 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Lock, LogIn, Chrome, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-function Login() {
-  const [email, setemail] = useState('');
-  const [password, setpassword] = useState('');
-  const [rememberMe, setrememberMe] = useState(false);
-
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const LoginHandler = async (email, password, rememberMe) => {
-    if (!email || !password) {
-      return alert("Provide Input Fields");
-    }
+  // --------------------------
+  // AUTH LOGIC
+  // --------------------------
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         'http://localhost:3000/api/login',
         { email, password, rememberMe },
         { withCredentials: true }
       );
-      return response;
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    }
-  };
 
-  const Handlesubmit = async (e) => {
-    e.preventDefault();
-    const res = await LoginHandler(email, password, rememberMe);
-    if (res && res.status === 200) {
-      localStorage.setItem("token", res.data.token);
-      navigate('/');
+      if (res.status === 200) {
+        const { token, user } = res.data;
+        
+        // Batch store user data
+        localStorage.setItem('token', token);
+        localStorage.setItem('Name', user.name);
+        localStorage.setItem('avatar', user.avatar);
+        localStorage.setItem('role', user.role);
+
+        // Immediate navigation based on role
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   // --------------------------
-  // PKCE HELPERS (CORRECT)
+  // PKCE GOOGLE HELPERS
   // --------------------------
-
-  // Convert ArrayBuffer → Base64URL
-  function base64urlencode(buffer) {
+  const base64urlencode = (buffer) => {
     const bytes = new Uint8Array(buffer);
     let binary = '';
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    let base64 = btoa(binary);
-    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  };
 
-  // SHA-256 hashing
-  async function sha256(text) {
+  const sha256 = async (text) => {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
-    return await crypto.subtle.digest("SHA-256", data);
-  }
+    return await crypto.subtle.digest('SHA-256', data);
+  };
 
-  // PKCE Code Verifier
-  function generateCodeVerifier(length = 128) {
-    const possible = import.meta.env.VITE_CODE_VERIFIER;
-    let text = '';
-    for (let i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  }
-
-
-  async function loginWithGoogle() {
+  const loginWithGoogle = async () => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT;
-    const redirectUri = "http://localhost:3000/api/google/auth";
+    const redirectUri = 'http://localhost:3000/api/google/auth';
+    
+    const verifier = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('code_verifier', verifier);
 
-    const codeVerifier = generateCodeVerifier();
-    localStorage.setItem("code_verifier", codeVerifier);
-
-    const hashed = await sha256(codeVerifier);
-    const codeChallenge = base64urlencode(hashed);
+    const hashed = await sha256(verifier);
+    const challenge = base64urlencode(hashed);
 
     const params = new URLSearchParams({
       client_id: clientId,
       redirect_uri: redirectUri,
-      response_type: "code",
-      scope: "openid email profile",
-      state: "random123",
-      code_challenge: codeChallenge,
-      code_challenge_method: "S256"
+      response_type: 'code',
+      scope: 'openid email profile',
+      code_challenge: challenge,
+      code_challenge_method: 'S256'
     });
 
-    window.location.href =
-      "https://accounts.google.com/o/oauth2/v2/auth?" + params.toString();
-  }
-
-
-  const handleNewUser = () => {
-    navigate('/register');
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
   };
 
-  // --------------------------
-  // UI
-  // --------------------------
   return (
-    <div className="flex h-[80vh] w-[30vw] flex-col justify-center px-6 py-12 lg:px-8 bg-gray-200 relative top-[10vh] left-[35vw] rounded-4xl  pb-30">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-black">
-          Sign in to your account
-        </h2>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={Handlesubmit} method="POST" className="space-y-6">
-
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm/6 font-medium text-gray-600">
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setemail(e.target.value)}
-                required
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 
-                  text-base text-gray-500 outline-1 -outline-offset-1 
-                  outline-black placeholder:text-gray-500 
-                  focus:outline-2 focus:-outline-offset-2 
-                  focus:outline-indigo-500 sm:text-sm/6"
-              />
-            </div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#f8fafc]">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-5xl w-full bg-white rounded-[2rem] shadow-2xl shadow-emerald-100/50 overflow-hidden flex flex-col lg:flex-row"
+      >
+        {/* Left Visual Panel */}
+        <div className="lg:w-1/2 bg-emerald-600 p-12 text-white flex flex-col justify-between relative overflow-hidden">
+          <div className="relative z-10">
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mb-8"
+            >
+              <ShieldCheck size={28} />
+            </motion.div>
+            <h3 className="text-4xl font-black leading-tight mb-4">
+              Cultivate your <br /> Knowledge.
+            </h3>
+            <p className="text-emerald-50 opacity-80 max-w-sm">
+              Access premium agricultural insights, AI-driven soil analysis, and a global community of modern farmers.
+            </p>
           </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm/6 font-medium text-gray-600">
-              Password
-            </label>
+          <div className="mt-12 relative z-10">
+            <div className="flex -space-x-3 mb-4">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="w-10 h-10 rounded-full border-2 border-emerald-600 bg-emerald-400 overflow-hidden">
+                  <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="user" />
+                </div>
+              ))}
+              <div className="w-10 h-10 rounded-full border-2 border-emerald-600 bg-emerald-800 flex items-center justify-center text-[10px] font-bold">
+                10k+
+              </div>
+            </div>
+            <p className="text-sm font-medium">Join over 10,000 farmers today.</p>
+          </div>
 
-            <div className="mt-2">
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setpassword(e.target.value)}
-                required
-                className="block w-full rounded-md bg-white/5 px-3 py-1.5 
-                  text-base text-gray-400 outline-1 -outline-offset-1 
-                  outline-black placeholder:text-gray-500 
-                  focus:outline-2 focus:-outline-offset-2 
-                  focus:outline-indigo-500 sm:text-sm/6"
-              />
+          {/* Abstract background shapes */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400/20 rounded-full -ml-32 -mb-32 blur-3xl" />
+        </div>
+
+        {/* Right Form Panel */}
+        <div className="lg:w-1/2 p-8 lg:p-16">
+          <div className="mb-10 text-center lg:text-left">
+            <h2 className="text-3xl font-black text-gray-900">Welcome Back</h2>
+            <p className="text-gray-500 mt-2">Enter your credentials to manage your farm.</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-9 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors " size={20} />
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-12  pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all"
+                  placeholder="name@farm.com"
+                  required
+                />
+              </div>
             </div>
 
-            {/* Remember Me */}
-            <div className="mt-2 flex items-center">
-              <input
-                type="checkbox"
-                className="h-3 w-4 ml-2"
+            <div>
+              <div className="flex justify-between mb-2 ml-1">
+                <label className="text-sm font-bold text-gray-700">Password</label>
+                <Link to="/forgot-password" size={20} className="text-xs font-bold text-emerald-600 hover:text-emerald-700">Forgot?</Link>
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-9 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors" size={20} />
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 px-1">
+              <input 
+                id="remember"
+                type="checkbox" 
                 checked={rememberMe}
-                onChange={(e) => setrememberMe(e.target.checked)}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-2 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" 
               />
-              <span className="ml-2">Remember Me?</span>
+              <label htmlFor="remember" className="text-sm text-gray-600 font-medium cursor-pointer">Keep me logged in</label>
             </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full py-4 bg-gray-900 hover:bg-black text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-xl shadow-gray-200 disabled:opacity-70"
+            >
+              {loading ? <Loader2 className="animate-spin" /> : <LogIn size={20} />}
+              {loading ? 'Verifying...' : 'Sign In'}
+            </button>
+          </form>
+
+          <AnimatePresence>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-4 p-4 bg-red-50 text-red-700 rounded-xl text-sm font-medium flex items-center gap-2"
+              >
+                <AlertCircle size={18} /> {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="mt-8">
+            <div className="relative flex items-center justify-center mb-8">
+              <div className="w-full border-t border-gray-100" />
+              <span className="absolute px-4 bg-white text-xs font-bold text-gray-400 uppercase tracking-widest">Or login with</span>
+            </div>
+
+            <button 
+              onClick={loginWithGoogle}
+              className="w-full py-3.5 border border-gray-200 rounded-2xl font-bold text-gray-700 flex items-center justify-center gap-3 hover:bg-gray-50 transition-all"
+            >
+              <Chrome size={20} className="text-red-500" />
+              Google Account
+            </button>
           </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            className="flex w-full justify-center rounded-md bg-gray-500 
-              px-3 py-1.5 text-sm/6 font-semibold text-white 
-              hover:bg-red-500 focus-visible:outline-2 
-              focus-visible:outline-offset-2 
-              focus-visible:outline-red-500"
-          >
-            Sign in
-          </button>
-        </form>
-
-        {/* Create new user */}
-        <div className="mt-4">
-          <button
-            onClick={handleNewUser}
-            className="flex w-full justify-center rounded-md bg-gray-500 
-              px-3 py-1.5 text-sm/6 font-semibold text-white 
-              hover:bg-red-500"
-          >
-            Create New
-          </button>
+          <p className="mt-8 text-center text-sm text-gray-500">
+            Don't have an account? <Link to="/register" className="text-emerald-600 font-black hover:underline">Join Now</Link>
+          </p>
         </div>
-
-        {/* Google Login */}
-        <div className="mt-4">
-          <button
-            onClick={loginWithGoogle}
-            className="flex w-full justify-center rounded-md bg-gray-500 
-              px-3 py-1.5 text-sm/6 font-semibold text-white 
-              hover:bg-red-500"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="currentColor"
-              viewBox="0 0 24 24">
-              <path
-                d="M7 11v2.4h3.97c-.16 1.029-1.2 3.02-3.97 3.02-2.39 0-4.34-1.979-4.34-4.42 0-2.44 1.95-4.42 4.34-4.42 1.36 0 2.27.58 2.79 1.08l1.9-1.83c-1.22-1.14-2.8-1.83-4.69-1.83-3.87 0-7 3.13-7 7s3.13 7 7 7c4.04 0 6.721-2.84 6.721-6.84 0-.46-.051-.81-.111-1.16h-6.61zm0 0 17 2h-3v3h-2v-3h-3v-2h3v-3h2v3h3v2z"
-                fillRule="evenodd"
-                clipRule="evenodd" />
-            </svg>
-            {/* Sign-in with Google */}
-          </button>
-        </div>
-        <div className='pt-5 ml-1'>
-          
-        <a href="/register" className='text-blue-500 '>Register New </a>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
-}
+};
 
 export default Login;

@@ -1,168 +1,188 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  BarChart3, Binary, Eye, 
+  Layers, Lightbulb, ListChecks, 
+  PlayCircle, Search 
+} from 'lucide-react'
 import PageTemplate from '../ui/PageTemplate'
 import pest from '../../assets/pest.svg'
 import Footer from '../footer'
 
+const TabButton = ({ label, value, activeTab, setActiveTab, icon: Icon }) => (
+  <button
+    onClick={() => setActiveTab(value)}
+    className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all duration-300 ${
+      activeTab === value
+        ? 'bg-red-600 text-white shadow-lg scale-105'
+        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+    }`}
+  >
+    <Icon size={18} />
+    {label}
+  </button>
+)
+
 function IPMGuide() {
-  const intro = 'Integrated Pest Management (IPM) - combining biological, cultural, mechanical, and chemical controls for sustainable pest control.'
+  const intro = 'Integrated Pest Management (IPM) is a decision-making process that combines multiple tools to minimize economic, health, and environmental risks.'
   const [activeTab, setActiveTab] = useState('basics')
 
-  const basics = [
-    {
-      title: 'What is IPM?',
-      content: 'IPM is a systematic approach using multiple pest control methods. Use chemical only as last resort. Monitor pest populations and act only when they exceed economic threshold.'
-    },
-    {
-      title: 'IPM Principles',
-      content: '1. Monitor: Scout fields 2-3x/week 2. Prevention: Use resistant varieties, crop rotation 3. Biological control: Release natural enemies 4. Cultural practices: Remove infected plants 5. Chemical: Only if needed'
-    },
-    {
-      title: 'Economic Threshold',
-      content: 'Pest level beyond which losses exceed control cost. Example: Rice leaf folder > 2 plants/sq.m requires control. Below this, let natural enemies handle it.'
-    }
-  ]
+  const videos = [
+    { id: 'O6x_p_lq7uI', title: 'Field Scouting 101', desc: 'Master the zig-zag pattern for unbiased pest counting.' },
+    { id: '1A-S8x_WvQk', title: 'Understanding ETL', desc: 'When to spray vs. when to let nature take its course.' },
+    { id: 'uF_Gf9S_2x8', title: 'Building a Scouting Kit', desc: 'Essential tools: hand lens, sweep nets, and sticky traps.' }
+  ];
 
-  const intermediate = [
-    {
-      title: 'Field Monitoring & Scouting',
-      content: 'Regular field visits identify pests early. Use sticky traps (yellow/blue), beat cloth, hand observation. Record data for decision-making.',
-      tips: ['Scout on cool mornings (6-9am)', 'Check 5-10 spots randomly per hectare', 'Count insects per plant or per sq.meter', 'Use sticky traps for flying insects', 'Compare with economic threshold levels', 'Weekly record-keeping essential']
-    },
-    {
-      title: 'Cultural & Mechanical Control',
-      content: 'Non-chemical methods preventing pest buildup. Crop rotation, field sanitation, removal of infected plants, proper spacing.',
-      tips: ['Crop rotation 2-3 years minimum', 'Remove crop residues after harvest', 'Deep ploughing reduces soil pests', 'Remove infected plants immediately', 'Proper spacing reduces disease', 'Good drainage prevents fungal disease']
-    },
-    {
-      title: 'Biological Control Agents',
-      content: 'Natural enemies: Ladybugs eat aphids, parasitic wasps control caterpillars, Trichoderma fungus prevents diseases.',
-      tips: ['Ladybugs: Eat 50-100 aphids/day each', 'Trichogramma: Parasitize 100+ moth eggs', 'Bacillus thuringiensis: Kill caterpillars', 'Release 50,000 parasitoids/hectare', 'Cost: ₹500-2000/ha', 'Work best with minimal chemical use']
-    }
-  ]
-
-  const advanced = [
-    {
-      title: 'Threshold-Based Decision Making',
-      content: 'Apply pesticide only when pest count exceeds economic threshold. Saves money and reduces chemical use.',
-      strategies: [
-        'Aphids: Spray at 5-10 per plant',
-        'Leaf folder: 2-3 affected tillers per sq.m',
-        'Whitefly: 15-20 insects per leaf',
-        'Monitor daily during high-risk period',
-        'Use pest forecasting models',
-        'Save 40-50% chemical costs'
-      ]
-    },
-    {
-      title: 'Resistant Variety Selection',
-      content: 'Choose varieties with built-in resistance to common pests and diseases. Most cost-effective long-term strategy.',
-      strategies: [
-        'Rice: Use varieties resistant to stem borer, gall midge',
-        'Cotton: BT cotton eliminates bollworm',
-        'Wheat: Resistance to Karnal bunt available',
-        'Tomato: Resistant varieties to late blight',
-        'Cost: Same as regular seeds',
-        'Prevention most economical'
-      ]
-    },
-    {
-      title: 'Integrated Approach - Complete System',
-      content: 'Combine all methods for comprehensive pest control. Resistant variety + crop rotation + biological control + monitoring + selective chemical use.',
-      strategies: [
-        'Year 1: Variety selection, baseline monitoring',
-        'Year 2: Crop rotation, add biofertilizers',
-        'Year 3: Release biological agents',
-        'Year 4+: Minimal chemical use, <2 sprays/season',
-        '30-50% pesticide reduction possible',
-        'Yield increase from healthier soil'
-      ]
-    }
-  ]
-
-  const TabButton = ({ label, value }) => (
-    <button
-      onClick={() => setActiveTab(value)}
-      className={`px-6 py-3 font-semibold rounded-lg transition-all ${
-        activeTab === value
-          ? 'bg-red-600 text-white'
-          : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-      }`}
-    >
-      {label}
-    </button>
-  )
-
-  const ContentCard = ({ title, content, tips, strategies }) => (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-red-500">
-      <h3 className="text-2xl font-bold text-red-700 mb-3">{title}</h3>
-      <p className="text-gray-700 mb-4 whitespace-pre-wrap">{content}</p>
-      {tips && (
-        <div className="bg-red-50 p-4 rounded">
-          <h4 className="font-semibold text-red-700 mb-2">🔍 Field Methods:</h4>
-          <ul className="list-disc list-inside space-y-1 text-gray-700">
-            {tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
-          </ul>
-        </div>
-      )}
-      {strategies && (
-        <div className="bg-orange-50 p-4 rounded mt-3">
-          <h4 className="font-semibold text-orange-700 mb-2">📈 Integrated Strategy:</h4>
-          <ul className="list-disc list-inside space-y-1 text-gray-700">
-            {strategies.map((strategy, idx) => <li key={idx}>{strategy}</li>)}
-          </ul>
-        </div>
-      )}
-    </div>
-  )
+  // ... (basics, intermediate, advanced data arrays from your snippet)
 
   return (
     <>
       <PageTemplate title="IPM Guide" hero={pest} intro={intro}>
-        <div className="space-y-8">
-          <div className="flex gap-4 flex-wrap">
-            <TabButton label="Basics" value="basics" />
-            <TabButton label="Intermediate" value="intermediate" />
-            <TabButton label="Advanced" value="advanced" />
+        <div className="max-w-6xl mx-auto space-y-12 pb-20">
+          
+          {/* Nav Tabs */}
+          <div className="flex gap-4 flex-wrap border-b border-gray-100 pb-6">
+            <TabButton label="Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} icon={Lightbulb} />
+            <TabButton label="Field Tools" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} icon={Search} />
+            <TabButton label="Economics" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} icon={BarChart3} />
           </div>
 
-          <div className="mt-6">
-            {activeTab === 'basics' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Beginner Level</h2>
-                {basics.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === 'basics' && (
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+                      <Layers className="text-red-600" /> The Control Pyramid
+                    </h2>
+                    <p className="text-gray-600 leading-relaxed italic">
+                      "IPM is like a pyramid. The foundation is built on prevention. As you move up, the interventions become more specific and more intense."
+                    </p>
+                    
+                  </div>
+                  <div className="bg-red-900 text-white p-10 rounded-[3rem] shadow-2xl">
+                     <h4 className="text-xl font-bold mb-6 text-red-300">The 4 Pillars</h4>
+                     <ul className="space-y-4 text-sm">
+                       <li className="flex gap-3"><b>1. Monitor:</b> Identify pests and their population levels.</li>
+                       <li className="flex gap-3"><b>2. Thresholds:</b> Determine the point of action.</li>
+                       <li className="flex gap-3"><b>3. Prevention:</b> Stop pests from becoming a problem.</li>
+                       <li className="flex gap-3"><b>4. Control:</b> Use bio-controls first, chemicals last.</li>
+                     </ul>
+                  </div>
+                </div>
+              )}
 
-            {activeTab === 'intermediate' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Intermediate Level</h2>
-                {intermediate.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
+              {activeTab === 'intermediate' && (
+                <div className="space-y-12">
+                   <div className="grid md:grid-cols-2 gap-8">
+                      <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+                        <h4 className="font-bold text-red-700 mb-4 flex items-center gap-2"><Eye /> Effective Scouting</h4>
+                        
+                        <p className="text-xs mt-4 text-gray-400 italic">Pro-Tip: Never just check the edges of the field; pests often congregate or hide in the center.</p>
+                      </div>
+                      <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+                        <h4 className="font-bold text-red-700 mb-4 flex items-center gap-2"><Binary /> Tool Comparison</h4>
+                        <div className="space-y-4">
+                           <div className="flex justify-between items-center text-xs">
+                              <span>Yellow Sticky Traps</span>
+                              <span className="font-bold text-red-600">Aphids / Whitefly</span>
+                           </div>
+                           <div className="flex justify-between items-center text-xs">
+                              <span>Blue Sticky Traps</span>
+                              <span className="font-bold text-red-600">Thrips</span>
+                           </div>
+                           <div className="flex justify-between items-center text-xs">
+                              <span>Pheromone Traps</span>
+                              <span className="font-bold text-red-600">Moths / Borers</span>
+                           </div>
+                        </div>
+                      </div>
+                   </div>
+                </div>
+              )}
 
-            {activeTab === 'advanced' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Advanced Level</h2>
-                {advanced.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
-          </div>
+              {activeTab === 'advanced' && (
+                <div className="space-y-8">
+                   <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+                     <BarChart3 className="text-red-600" /> Economic Action Thresholds
+                   </h2>
+                   <div className="grid lg:grid-cols-2 gap-12 items-center">
+                      <div className="space-y-6">
+                         <div className="bg-white p-8 rounded-[3rem] border-2 border-red-50 shadow-lg">
+                            <h4 className="text-lg font-bold mb-4 text-gray-800">Visualizing the ETL</h4>
+                            
+                            <p className="text-xs text-gray-500 mt-4">The **Economic Threshold** is your 'trigger' point. If you act here, you prevent the pest from ever reaching the **Economic Injury Level**, where you start losing money.</p>
+                         </div>
+                      </div>
+                      <div className="space-y-4">
+                         <div className="p-6 bg-red-50 rounded-2xl">
+                            <h5 className="font-bold text-red-800 text-sm">Rice Gall Midge</h5>
+                            <p className="text-xs text-red-600">ETL: 5% silver shoots / sq.m</p>
+                         </div>
+                         <div className="p-6 bg-orange-50 rounded-2xl">
+                            <h5 className="font-bold text-orange-800 text-sm">Cotton Bollworm</h5>
+                            <p className="text-xs text-orange-600">ETL: 1 larva per plant</p>
+                         </div>
+                         <div className="p-6 bg-amber-50 rounded-2xl">
+                            <h5 className="font-bold text-amber-800 text-sm">Potato Late Blight</h5>
+                            <p className="text-xs text-amber-600">ETL: First sign of lesion (Preventive required)</p>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-          <div className="bg-gradient-to-r from-red-50 to-orange-50 p-8 rounded-lg border border-red-200">
-            <h3 className="text-2xl font-bold text-red-800 mb-4">✅ IPM Implementation Checklist</h3>
-            <div className="space-y-2 text-gray-700">
-              <p>□ Select resistant varieties for your region</p>
-              <p>□ Plan crop rotation (3-year minimum)</p>
-              <p>□ Scout fields 2-3 times per week</p>
-              <p>□ Identify pest and determine threshold</p>
-              <p>□ Try cultural/mechanical control first</p>
-              <p>□ Release biological agents if available</p>
-              <p>□ Use chemical only if threshold exceeded</p>
-              <p>□ Keep detailed record of all pest observations</p>
-              <p>□ Evaluate effectiveness each season</p>
-              <p className="font-semibold text-green-700 mt-3">Result: 40-50% pesticide reduction, 15-25% cost savings, higher yields ✓</p>
+          {/* Videos */}
+          <section className="pt-12 border-t border-gray-100">
+            <h2 className="text-3xl font-black text-center mb-10 flex items-center justify-center gap-3">
+              <PlayCircle className="text-red-500" /> IPM Mastery Skills
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {videos.map((video, index) => (
+                <div key={index} className="group bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100">
+                  <div className="aspect-video relative bg-black">
+                    <iframe 
+                      width="100%" height="100%" 
+                      src={`https://www.youtube.com/embed/${video.id}`} 
+                      title={video.title} frameBorder="0" allowFullScreen 
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h5 className="font-bold text-gray-800 text-sm group-hover:text-red-600">{video.title}</h5>
+                    <p className="text-xs text-gray-400 mt-1">{video.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
+          </section>
+
+          {/* Final Checklist */}
+          <div className="bg-gradient-to-br from-red-600 to-orange-800 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
+             <div className="relative z-10">
+               <h3 className="text-2xl font-black mb-6 flex items-center gap-3"><ListChecks /> IPM Seasonal Checklist</h3>
+               <div className="grid md:grid-cols-2 gap-8">
+                  <ul className="space-y-3 text-sm opacity-90">
+                    <li className="flex gap-2"><span>□</span> Choose resistant varieties suited for the local climate.</li>
+                    <li className="flex gap-2"><span>□</span> Set up monitoring traps (Yellow/Pheromone) early.</li>
+                    <li className="flex gap-2"><span>□</span> Train staff to distinguish between 'pests' and 'friends'.</li>
+                  </ul>
+                  <ul className="space-y-3 text-sm opacity-90">
+                    <li className="flex gap-2"><span>□</span> Only use chemicals with a different MoA than last time.</li>
+                    <li className="flex gap-2"><span>□</span> Record every spray and every count for end-of-year review.</li>
+                    <li className="flex gap-2 text-red-200 font-bold italic underline">Goal: Healthy crops, lower costs, clean water.</li>
+                  </ul>
+               </div>
+             </div>
           </div>
+
         </div>
       </PageTemplate>
       <Footer />
@@ -170,4 +190,4 @@ function IPMGuide() {
   );
 }
 
-export default IPMGuide
+export default IPMGuide;

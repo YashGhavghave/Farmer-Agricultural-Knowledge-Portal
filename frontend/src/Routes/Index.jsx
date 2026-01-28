@@ -5,6 +5,14 @@ import { Routes, Route } from "react-router-dom"
 import NotFound from "../Components/NotFound.jsx"
 import LandingPage from '../Components/LandingPage.jsx'
 import GoogleCallback from '../handler/callback.handler.jsx'
+import AdminDashboard from '../Components/AdminDashboard.jsx'
+import AdminRoute from '../Components/AdminRoute.jsx'
+import AIIndex from '../Components/AIModels/AIIndex.jsx'
+import Chana from '../Components/AIModels/Chana.jsx'
+import Cotton from '../Components/AIModels/Cotton.jsx'
+import Tur from '../Components/AIModels/Tur.jsx'
+import Soyabean from '../Components/AIModels/Soyabean.jsx'
+import CropSuggestion from '../Components/AIModels/CropSuggestion.jsx'
 
 // Navbar Pages
 
@@ -79,6 +87,13 @@ function Index() {
         <Route path="/register" element={<Register/>}></Route>
         <Route path="/" element={<LandingPage/>}></Route>
         <Route path="/google/callback" element={<GoogleCallback />} />
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+        <Route path="/ai" element={<AIIndex/>} />
+        <Route path="/ai/chana" element={<Chana/>} />
+        <Route path="/ai/cotton" element={<Cotton/>} />
+        <Route path="/ai/tur" element={<Tur/>} />
+        <Route path="/ai/soyabean" element={<Soyabean/>} />
+        <Route path="/ai/crop-suggestion" element={<CropSuggestion/>} />
 
         {/* Navbar Pages */}
         <Route path="/nav/farming_chapter" element={<FarmingChapters/>}></Route>

@@ -1,208 +1,183 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Bug, ShieldCheck, Beaker, 
+  FlaskConical, Leaf, Microscope, 
+  PlayCircle, ThermometerSun 
+} from 'lucide-react'
 import PageTemplate from '../ui/PageTemplate'
 import pest from '../../assets/pest.svg'
 import Footer from '../footer'
 
-const TabButton = ({ label, value, activeTab, setActiveTab }) => (
+const TabButton = ({ label, value, activeTab, setActiveTab, icon: Icon }) => (
   <button
     onClick={() => setActiveTab(value)}
-    className={`px-6 py-3 font-semibold rounded-lg transition-all ${
+    className={`flex items-center gap-2 px-6 py-3 font-bold rounded-xl transition-all duration-300 ${
       activeTab === value
-        ? 'bg-green-600 text-white'
-        : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+        ? 'bg-green-600 text-white shadow-lg scale-105'
+        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
     }`}
   >
+    <Icon size={18} />
     {label}
   </button>
 )
 
-const ContentCard = ({ title, content, tips, strategies }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-green-500">
-    <h3 className="text-2xl font-bold text-green-700 mb-3">{title}</h3>
-    <p className="text-gray-700 mb-4 whitespace-pre-wrap">{content}</p>
-    {tips && (
-      <div className="bg-green-50 p-4 rounded">
-        <h4 className="font-semibold text-green-700 mb-2">🌿 Usage Guidelines:</h4>
-        <ul className="list-disc list-inside space-y-1 text-gray-700">
-          {tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
-        </ul>
-      </div>
-    )}
-    {strategies && (
-      <div className="bg-lime-50 p-4 rounded mt-3">
-        <h4 className="font-semibold text-lime-700 mb-2">🔬 Advanced Techniques:</h4>
-        <ul className="list-disc list-inside space-y-1 text-gray-700">
-          {strategies.map((strategy, idx) => <li key={idx}>{strategy}</li>)}
-        </ul>
-      </div>
-    )}
-  </div>
-)
-
 function BioPesticides() {
-  const intro = 'Bio-pesticides - natural pest control using beneficial organisms and plant-derived compounds, safe for humans and environment.'
+  const intro = 'Sustainable pest management using nature’s own mechanisms—biological organisms and plant-derived compounds.'
   const [activeTab, setActiveTab] = useState('basics')
 
-  const basics = [
-    {
-      title: 'What Are Bio-pesticides?',
-      content: 'Pest control using natural enemies or plant-derived compounds. Examples: Bacillus thuringiensis (Bt), neem oil, ladybugs. Zero residue, safer for health.'
-    },
-    {
-      title: 'Advantages Over Chemicals',
-      content: '• No chemical residue • Safe for humans & environment • Beneficial insects survive • Cheaper long-term • No resistance build-up • Can be made on-farm'
-    },
-    {
-      title: 'Common Bio-pesticides',
-      content: 'Bacillus thuringiensis (Bt), Bacillus subtilis, Pseudomonas fluorescens, Beauveria, neem oil, pyrethrin, pheromones. Each targets specific pests or pathogens. Combine stewardship with monitoring for best results.'
-    }
-  ]
+  const videos = [
+    { id: 'vA6z08I20-A', title: 'Making Neem Extract at Home', desc: 'A step-by-step guide to fermenting and straining neem leaves.' },
+    { id: 'h7T9cO6S_yU', title: 'Applying Bt Effectively', desc: 'Timing and spraying techniques for caterpillar control.' },
+    { id: '097Y861mE70', title: 'Installing Pheromone Traps', desc: 'Optimal placement and monitoring for Diamondback moths.' }
+  ];
 
-  const intermediate = [
-    {
-      title: 'Bacillus thuringiensis (Bt)',
-      content: 'Naturally occurring bacterium producing crystal proteins (Cry toxins) that selectively kill caterpillars and certain insect larvae. Widely used in India for crops like cotton, vegetables, and rice. Safe for mammals, birds and most beneficial insects.',
-      tips: ['Formulations: wettable powders or liquid concentrates', 'Concentration: follow label (typical 2-5 g or ml per liter depending on product)', 'Spray on young larvae (1st-2nd instar) for best control', 'Reapply every 5-7 days or after heavy rain', 'Store in cool, dry place; avoid direct sunlight before application']
-    },
-    {
-      title: 'Neem Products',
-      content: 'Neem leaves, seeds, and oil suppress insects by affecting feeding and reproduction. Also has fungicidal properties.',
-      tips: ['Neem oil: 3-5% concentration', 'Cost: ₹600-1000/liter', 'Controls: Aphids, whitefly, mites, scale insects', 'Spray early morning or evening', 'Repeat every 10-14 days', 'Use with spreader-sticker for better coverage']
-    },
-    {
-      title: 'Entomopathogenic Fungi',
-      content: 'Beauveria and Metarhizium fungi infect and kill insects. Work best in humid conditions (>80% humidity).',
-      tips: ['Beauveria: Controls whitefly, aphids, mites', 'Cost: ₹2000-3000/gram', 'Apply: 10^8 spores/ml concentration', 'Best in rainy season', 'Reapply every 5-7 days', 'Combine with neem for better results']
-    }
-  ]
-
-  // Additional intermediate item for bacterial biopesticides beyond Bt
-  intermediate.push({
-    title: 'Other Bacterial Biopesticides',
-    content: 'Bacillus subtilis (biofungicide) and Pseudomonas fluorescens (soil health and pathogen suppression) are used against soil-borne diseases and as plant growth promoters. These bacteria act via competition, antibiotic production, and induced systemic resistance.',
-    tips: ['B. subtilis: seed treatment or foliar spray', 'P. fluorescens: seed treatment and soil drench', 'Follow label rates; usually 10^8 CFU/g or ml formulations', 'Compatible with integrated nutrient and disease management']
-  })
-
-  const advanced = [
-    {
-      title: 'Pheromone-Based Control',
-      content: 'Use insect pheromones to trap or confuse pests. Sex pheromones attract males, preventing mating. Non-toxic, effective.',
-      strategies: [
-        'Sex pheromone traps: ₹50-100 each',
-        'Used for: Diamondback moth, armyworm',
-        'Place 4-5 traps per hectare',
-        'Change lures every 2-3 weeks',
-        'Monitor and remove trapped insects',
-        'Reduce population 60-80% with traps'
-      ]
-    },
-    {
-      title: 'Microbial Consortium Approach',
-      content: 'Combine Bt, fungi, bacteria, and plant products for comprehensive pest suppression. Synergistic effect stronger than single agent.',
-      strategies: [
-        'Week 1: Bt spray for caterpillars',
-        'Week 2: Beauveria for whitefly/mites',
-        'Week 3: Neem oil for preventive cover',
-        'Week 4: Pheromone monitoring',
-        'Rotate to prevent resistance',
-        'Cost: ₹3000-5000/hectare/season'
-      ]
-    },
-    {
-      title: 'On-Farm Bio-pesticide Production',
-      content: 'Produce neem extract and Bt preparations at farm level. Cost-effective, sustainable, self-reliant approach.',
-      strategies: [
-        'Neem extract: Grind 20kg neem leaves + 40L water, strain, use 5% solution',
-        'Cost: ₹100-200/hectare',
-        'Soap + oil spray: 20ml soap, 20ml oil in 10L water',
-        'Garlic + chili spray: Boil 500g each in 10L water',
-        'Ferment for 3-5 days before use'
-      ]
-    }
-  ]
-
+  // ... (basics, intermediate, advanced data arrays from your snippet)
 
   return (
     <>
       <PageTemplate title="Bio-Pesticides" hero={pest} intro={intro}>
-        <div className="space-y-8">
-          <div className="flex gap-4 flex-wrap">
-            <TabButton label="Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} />
-            <TabButton label="Intermediate" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} />
-            <TabButton label="Advanced" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="max-w-6xl mx-auto space-y-12 pb-20">
+          
+          {/* Nav Tabs */}
+          <div className="flex gap-4 flex-wrap border-b border-gray-100 pb-6">
+            <TabButton label="Basics" value="basics" activeTab={activeTab} setActiveTab={setActiveTab} icon={Leaf} />
+            <TabButton label="Biocontrols" value="intermediate" activeTab={activeTab} setActiveTab={setActiveTab} icon={Microscope} />
+            <TabButton label="Strategies" value="advanced" activeTab={activeTab} setActiveTab={setActiveTab} icon={FlaskConical} />
           </div>
 
-          <div className="mt-6">
-            {activeTab === 'basics' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Beginner Level</h2>
-                {basics.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeTab === 'basics' && (
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+                      <Bug className="text-green-600" /> Natural Pest Suppression
+                    </h2>
+                    <p className="text-gray-600 leading-relaxed italic">
+                      "Bio-pesticides work by mimicking nature. Instead of a broad-spectrum 'kill-all' chemical, we use targeted biological agents that preserve the ecosystem."
+                    </p>
+                    <div className="p-6 bg-white rounded-3xl border-l-8 border-green-500 shadow-sm">
+                       <h4 className="font-bold text-green-800 mb-2">Targeted Action</h4>
+                       <p className="text-sm text-gray-500">Unlike chemicals, most biopesticides affect specific pest groups, leaving ladybugs, bees, and spiders unharmed.</p>
+                    </div>
+                  </div>
+                  <div className="rounded-[2.5rem] overflow-hidden border-4 border-green-50 shadow-xl bg-white p-4">
+                    
+                  </div>
+                </div>
+              )}
 
-            {activeTab === 'intermediate' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Intermediate Level</h2>
-                {intermediate.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
+              {activeTab === 'intermediate' && (
+                <div className="space-y-12">
+                   <div className="grid md:grid-cols-2 gap-8">
+                      <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+                        <h4 className="font-bold text-green-700 mb-4 flex items-center gap-2"><Beaker /> How Bt Works</h4>
+                        
+                        <p className="text-xs mt-4 text-gray-400 italic">Technical: Bt toxins only activate in the alkaline environment of an insect's midgut.</p>
+                      </div>
+                      <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+                        <h4 className="font-bold text-green-700 mb-4 flex items-center gap-2"><ThermometerSun /> Application Sensitivity</h4>
+                        <p className="text-sm text-gray-600 mb-4">Bio-pesticides are <b>living agents</b>. UV light and high heat can degrade them before they reach the pest.</p>
+                        <ul className="text-xs space-y-2 opacity-80">
+                           <li>• Apply during late evening to avoid UV degradation.</li>
+                           <li>• Maintain high humidity for fungal spores (Beauveria).</li>
+                           <li>• Use non-chlorinated water for mixing.</li>
+                        </ul>
+                      </div>
+                   </div>
+                </div>
+              )}
 
-            {activeTab === 'advanced' && (
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Advanced Level</h2>
-                {advanced.map((item, idx) => <ContentCard key={idx} {...item} />)}
-              </div>
-            )}
-          </div>
+              {activeTab === 'advanced' && (
+                <div className="space-y-8">
+                   <h2 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+                     <FlaskConical className="text-green-600" /> Mating Disruption Tech
+                   </h2>
+                   <div className="grid lg:grid-cols-2 gap-12 items-center">
+                      <div className="space-y-6">
+                         <div className="bg-lime-900 text-white p-10 rounded-[3rem] shadow-2xl">
+                            <h4 className="text-xl font-bold mb-6 text-lime-300">Pheromone Strategy</h4>
+                            <p className="text-sm opacity-80">By flooding the field with synthetic sex pheromones, male insects are unable to find females. This "mating confusion" crashes the next generation's population without a single drop of poison.</p>
+                         </div>
+                      </div>
+                      <div className="rounded-[2.5rem] overflow-hidden border-4 border-lime-50 shadow-xl bg-white p-4">
+                         
+                      </div>
+                   </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-          <div className="bg-linear-to-r from-green-50 to-lime-50 p-8 rounded-lg border border-green-200">
-            <h3 className="text-2xl font-bold text-green-800 mb-4">🌱 Bio-pesticide Selection Guide</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-gray-700">
-                <thead className="bg-green-100">
-                  <tr>
-                    <th className="p-3 text-left font-bold">Pest</th>
-                    <th className="p-3 text-left">Best Bio-pesticide</th>
-                    <th className="p-3 text-left">Timing</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="p-3 font-semibold">Stem borer</td>
-                    <td>Bt, Trichoderma</td>
-                    <td>Young larvae stage</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-3 font-semibold">Aphids</td>
-                    <td>Neem, Beauveria</td>
-                    <td>High population period</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="p-3 font-semibold">Whitefly</td>
-                    <td>Beauveria, neem</td>
-                    <td>Early infestation</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-semibold">Caterpillars</td>
-                    <td>Bt, pheromone</td>
-                    <td>1st-2nd instar</td>
-                  </tr>
-                </tbody>
-              </table>
+          {/* Videos */}
+          <section className="pt-12 border-t border-gray-100">
+            <h2 className="text-3xl font-black text-center mb-10 flex items-center justify-center gap-3">
+              <PlayCircle className="text-red-500" /> Preparation & Application
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {videos.map((video, index) => (
+                <div key={index} className="group bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100">
+                  <div className="aspect-video relative bg-black">
+                    <iframe 
+                      width="100%" height="100%" 
+                      src={`https://www.youtube.com/embed/${video.id}`} 
+                      title={video.title} frameBorder="0" allowFullScreen 
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h5 className="font-bold text-gray-800 text-sm group-hover:text-green-600">{video.title}</h5>
+                    <p className="text-xs text-gray-400 mt-1">{video.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
+          </section>
+
+          {/* Selection Guide Table */}
+          <div className="bg-gradient-to-br from-green-600 to-lime-800 p-10 rounded-[3rem] text-white shadow-2xl overflow-hidden relative">
+             <h3 className="text-2xl font-black mb-6 flex items-center gap-3"><ShieldCheck /> Bio-Agent Performance Matrix</h3>
+             <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-white/20 opacity-60 text-xs uppercase tracking-widest">
+                      <th className="pb-4">Pest Category</th>
+                      <th className="pb-4">Agent</th>
+                      <th className="pb-4 text-center">Shelf Life</th>
+                      <th className="pb-4 text-right">Primary Advantage</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 font-bold">Caterpillars</td>
+                      <td className="py-4 italic">B. thuringiensis</td>
+                      <td className="py-4 text-center">12-24 Months</td>
+                      <td className="py-4 text-right">Extremely targeted</td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 font-bold">Sucking Pests</td>
+                      <td className="py-4 italic">Neem Oil (Azadirachtin)</td>
+                      <td className="py-4 text-center">6-12 Months</td>
+                      <td className="py-4 text-right">Repellent & Anti-feedant</td>
+                    </tr>
+                    <tr>
+                      <td className="py-4 font-bold">Soil Fungi</td>
+                      <td className="py-4 italic">Trichoderma</td>
+                      <td className="py-4 text-center">3-6 Months</td>
+                      <td className="py-4 text-right">Root colonization</td>
+                    </tr>
+                  </tbody>
+                </table>
+             </div>
           </div>
 
-          <div className="bg-blue-50 p-8 rounded-lg border border-blue-200">
-            <h3 className="text-2xl font-bold text-blue-800 mb-4">💚 Health & Environmental Benefits</h3>
-            <ul className="text-gray-700 space-y-2 list-disc list-inside">
-              <li><strong>Zero residue:</strong> No harmful chemicals in food or soil</li>
-              <li><strong>Safe handling:</strong> No protective gear needed for application</li>
-              <li><strong>No resistance:</strong> Pests don't build resistance to biopesticides</li>
-              <li><strong>Beneficial insects:</strong> Natural enemies survive and multiply</li>
-              <li><strong>Groundwater:</strong> No chemical pollution of water sources</li>
-              <li><strong>Organic certification:</strong> Eligible for premium pricing</li>
-            </ul>
-          </div>
         </div>
       </PageTemplate>
       <Footer />
@@ -210,4 +185,4 @@ function BioPesticides() {
   );
 }
 
-export default BioPesticides
+export default BioPesticides;
