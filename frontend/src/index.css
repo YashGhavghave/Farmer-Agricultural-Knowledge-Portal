@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+html,
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+iframe.goog-te-banner-frame,
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-ftab,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-text-highlight {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body > .skiptranslate {
+  display: none !important;
+}
+
+#google_translate_element {
+  display: none !important;
+}
+
 /* Move @variant outside of @theme */
 @variant dark (&:where(.dark, .dark *));
 
