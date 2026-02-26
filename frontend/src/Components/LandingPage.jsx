@@ -1,217 +1,380 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { GoogleGenAI } from '@google/genai';
 import { 
-  Sprout, 
-  CloudSun, 
-  Cpu, 
-  BarChart3, 
-  ArrowRight, 
-  CheckCircle2, 
-  Zap,
-  Star
+  Sprout, CloudSun, Cpu, BarChart3, Zap 
 } from 'lucide-react';
 
 import Navbar from './Navbar';
 import Footer from './footer.jsx';
 import { useTheme } from '../Context/ThemeContext';
 
-// Auth Guard Component
+/* ================= AUTH GUARD ================= */
 function TokenVerify() {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      navigate('/login');
-    }
+    if (!localStorage.getItem('token')) navigate('/login');
   }, [navigate]);
   return null;
 }
 
-const FeatureCard = ({ icon: Icon, title, desc, delay, isDark }) => (
-  <motion.div 
+/* ================= FEATURE CARD ================= */
+const FeatureCard = ({ icon: Icon, title, desc, isDark }) => (
+  <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.5, delay }}
-    className={`group p-8 rounded-3xl border transition-all duration-500 hover:scale-[1.02] ${
-      isDark 
-        ? 'bg-gray-800/50 border-gray-700 hover:bg-gray-800 hover:border-emerald-500/50' 
-        : 'bg-white border-gray-100 shadow-xl shadow-gray-200/50 hover:border-emerald-200'
-    }`}
+    transition={{ duration: 0.5 }}
+    className={`p-8 rounded-3xl border transition-all
+      ${isDark 
+        ? 'bg-gray-800/60 border-gray-700 text-gray-300' 
+        : 'bg-white border-gray-100 shadow-xl text-gray-700'
+      }
+    `}
   >
-    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:rotate-12 ${
-      isDark ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-600'
-    }`}>
+    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6
+      ${isDark ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-600'}
+    `}>
       <Icon size={28} />
     </div>
-    <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>{title}</h3>
-    <p className={`leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{desc}</p>
+    <h3 className={`text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+      {title}
+    </h3>
+    <p>{desc}</p>
   </motion.div>
 );
 
+/* ================= MAIN COMPONENT ================= */
 function LandingPage() {
   const { isDark } = useTheme();
+  const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const ai = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
+
+  /* ===== AI STATES ===== */
+  const [crop, setCrop] = useState('wheat');
+  const [outputLanguage, setOutputLanguage] = useState('english');
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [result, setResult] = useState(null);
+  const [geminiAdvice, setGeminiAdvice] = useState('');
+  const [geminiLoading, setGeminiLoading] = useState(false);
+  const [geminiError, setGeminiError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+
+  const normalizeGeminiAdvice = (text) => {
+    if (!text || typeof text !== 'string') return '';
+    return text
+      .replace(/\r/g, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/^#{1,6}\s*/gm, '')
+      .replace(/^\*\s+/gm, '• ')
+      .replace(/^\s*[-]\s+/gm, '• ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  };
+
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const base64 = dataUrl.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const generateGeminiAdvice = async ({ cropName, predictionLabel, confidence, imageFile }) => {
+    if (!geminiApiKey || !ai) {
+      setGeminiError('Gemini API key is missing. Add VITE_GEMINI_API_KEY in your frontend .env file.');
+      return;
+    }
+
+    setGeminiLoading(true);
+    setGeminiError('');
+
+    try {
+      const imageBase64 = await fileToBase64(imageFile);
+
+        const prompt = `You are an expert agronomist and plant pathologist. Analyze this crop leaf image and give practical farmer-friendly guidance.
+
+Crop: ${cropName}
+Model prediction: ${predictionLabel}
+Model confidence: ${confidence}%
+      Response language: ${outputLanguage}
+
+Return plain text only (no markdown symbols like *, **, or #).
+Use exactly these section titles and keep each section concise:
+
+1) Likely disease overview
+2) Visual symptoms to confirm
+3) Immediate actions (next 24-48 hours)
+4) Treatment plan (organic + chemical options)
+5) Prevention for next season
+6) When to contact a local agri expert
+
+Keep the response practical, safe, and concise for field use.`;
+
+      const candidateModels = ['gemini-3-flash-preview', 'gemini-2.5-flash', 'gemini-1.5-flash'];
+      let adviceText = '';
+      let lastError = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          const response = await ai.models.generateContent({
+            model: modelName,
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { text: prompt },
+                  {
+                    inlineData: {
+                      mimeType: imageFile.type || 'image/jpeg',
+                      data: imageBase64,
+                    },
+                  },
+                ],
+              },
+            ],
+          });
+
+          adviceText = normalizeGeminiAdvice(typeof response?.text === 'string' ? response.text : '');
+          if (adviceText) break;
+          lastError = new Error(`Empty response from ${modelName}`);
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      if (!adviceText) {
+        throw lastError || new Error('No advice generated from Gemini');
+      }
+
+      setGeminiAdvice(adviceText);
+    } catch (error) {
+      const message =
+        error?.message ||
+        error?.error?.message ||
+        'Could not generate Gemini recommendations right now.';
+      setGeminiError(`Gemini request failed: ${message}`);
+    } finally {
+      setGeminiLoading(false);
+    }
+  };
+
+  /* ===== DRAG & DROP ===== */
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true);
+    if (e.type === "dragleave") setDragActive(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setImage(e.dataTransfer.files[0]);
+      setPreview(URL.createObjectURL(e.dataTransfer.files[0]));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setImage(e.target.files[0]);
+    setPreview(URL.createObjectURL(e.target.files[0]));
+    setResult(null);
+    setGeminiAdvice('');
+    setGeminiError('');
+  };
+
+  /* ===== AI PREDICT ===== */
+  const handlePredict = async () => {
+    if (!image) return alert("Please upload an image");
+
+    const formData = new FormData();
+    formData.append("image", image);
+
+    setLoading(true);
+    setResult(null);
+    setGeminiAdvice('');
+    setGeminiError('');
+
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/predict/${crop}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      setResult(res.data);
+
+      await generateGeminiAdvice({
+        cropName: crop,
+        predictionLabel: res.data?.prediction || 'Unknown',
+        confidence: res.data?.confidence || 'N/A',
+        imageFile: image,
+      });
+    } catch {
+      alert("Prediction failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className={`min-h-screen w-full selection:bg-emerald-500 selection:text-white ${isDark ? 'bg-[#0f172a] text-slate-200' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen transition-colors
+      ${isDark ? 'bg-[#0f172a] text-slate-200' : 'bg-slate-50 text-slate-900'}
+    `}>
       <Navbar />
       <TokenVerify />
 
-      {/* Hero Section */}
-      <section className="relative pt-8 pb-20 px-6 overflow-hidden">
-        {/* Background Glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/10 blur-[120px]" />
-          <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] rounded-full bg-blue-500/10 blur-[120px]" />
-        </div>
-
+      {/* ================= HERO ================= */}
+      <section className="pt-12 pb-20 px-6">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-medium mb-8">
-              <Zap size={14} />
-              <span>Next-Gen Agricultural Intelligence</span>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="inline-flex gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-500 mb-6">
+              <Zap size={14} /> Next-Gen Agricultural Intelligence
             </div>
-            
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1] mb-8">
-              Engineering the <span className={` bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500 ${isDark ? 'text-emerald-400' : 'text-orange-400'}`}>Future of Farming</span>
+            <h1 className="text-5xl md:text-6xl font-black mb-6">
+              Engineering the <span className="text-emerald-500">Future of Farming</span>
             </h1>
-            
-            <p className={`text-lg md:text-xl mb-10 leading-relaxed max-w-xl ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Bridging the gap between engineering and agriculture. Harness AI models, real-time IoT data, and satellite insights to maximize yield.
+            <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
+              AI-powered crop disease diagnosis using EfficientNet and attention mechanisms.
             </p>
-
-            <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/25 transition-all flex items-center gap-2">
-                Get Started Free <ArrowRight size={20} />
-              </button>
-              <button className={`px-8 py-4 font-bold rounded-2xl border transition-all ${
-                isDark ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-200 hover:bg-white'
-              }`}>
-                View Demo
-              </button>
-            </div>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-            className="relative"
+          <img
+            src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff"
+            alt="Farming AI"
+            className="rounded-3xl shadow-xl"
+          />
+        </div>
+      </section>
+
+      {/* ================= FEATURES ================= */}
+      <section className={`py-24 px-6 ${isDark ? 'bg-[#0f172a]' : 'bg-white'}`}>
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-8">
+          <FeatureCard icon={BarChart3} title="Crop Analytics" desc="Disease prediction models" isDark={isDark} />
+          <FeatureCard icon={CloudSun} title="Weather IQ" desc="Climate-aware learning" isDark={isDark} />
+          <FeatureCard icon={Cpu} title="Deep Learning" desc="EfficientNet + Attention" isDark={isDark} />
+          <FeatureCard icon={Sprout} title="Sustainability" desc="Precision agriculture" isDark={isDark} />
+        </div>
+      </section>
+
+      {/* ================= AI PREDICTION ================= */}
+      <section className="py-24 px-6">
+        <div className={`max-w-3xl mx-auto p-10 rounded-3xl border transition-colors
+          ${isDark 
+            ? 'bg-slate-800 border-slate-700 text-slate-200' 
+            : 'bg-white border-slate-200 shadow-xl text-slate-900'
+          }
+        `}>
+          <h2 className="text-3xl font-bold mb-6 text-center">
+            Leaf Disease Detection (AI)
+          </h2>
+
+          <select
+            value={crop}
+            onChange={(e) => setCrop(e.target.value)}
+            className={`w-full p-4 mb-4 rounded-xl border outline-none
+              ${isDark
+                ? 'bg-slate-900 border-slate-600 text-slate-200'
+                : 'bg-white border-slate-300 text-slate-900'
+              }
+            `}
           >
-            <div className={`aspect-square rounded-[3rem] overflow-hidden border-8 ${isDark ? 'border-slate-800' : 'border-white shadow-2xl'}`}>
-              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-blue-500/20 mix-blend-overlay" />
-              <img 
-                src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&q=80&w=800" 
-                alt="Smart Farming" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Floating Card */}
-            {/* <motion.div 
-              animate={{ y: [0, -20, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className={`absolute -bottom-6 -left-6 p-6 rounded-2xl shadow-2xl backdrop-blur-xl ${isDark ? 'bg-slate-800/90 border border-slate-700' : 'bg-white/90 border border-slate-100'}`}
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white">
-                  <BarChart3 size={24} />
-                </div>
-                <div>
-                  <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Yield Increase</div>
-                  <div className="text-2xl font-black text-emerald-500">+42.8%</div>
-                </div>
-              </div>
-            </motion.div> */}
-          </motion.div>
-        </div>
-      </section>
+            <option value="cotton">Cotton</option>
+            <option value="chickpea">Chickpea (Chana)</option>
+            <option value="soybean">Black Gram</option>
+            <option value="wheat">Wheat</option>
+          </select>
 
-      {/* Features Section */}
-      <section className={`py-32 ${isDark ? 'bg-[#0f172a]' : 'bg-white'}`}>
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Cutting-edge Toolkit</h2>
-            <div className="h-1.5 w-24 bg-emerald-500 mx-auto rounded-full" />
+          <select
+            value={outputLanguage}
+            onChange={(e) => setOutputLanguage(e.target.value)}
+            className={`w-full p-4 mb-4 rounded-xl border outline-none
+              ${isDark
+                ? 'bg-slate-900 border-slate-600 text-slate-200'
+                : 'bg-white border-slate-300 text-slate-900'
+              }
+            `}
+          >
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
+            <option value="marathi">Marathi</option>
+          </select>
+
+          {/* Drag & Drop */}
+          <div
+            onDragEnter={handleDrag}
+            onDragOver={handleDrag}
+            onDragLeave={handleDrag}
+            onDrop={handleDrop}
+            className={`relative mb-6 h-52 flex items-center justify-center rounded-2xl border-2 border-dashed transition-all
+              ${dragActive ? 'border-emerald-500 bg-emerald-500/10' : ''}
+              ${isDark 
+                ? 'border-slate-600 bg-slate-900 text-slate-400' 
+                : 'border-slate-300 bg-slate-50 text-slate-500'
+              }
+            `}
+          >
+            {preview ? (
+              <img src={preview} alt="preview" className="max-h-full rounded-xl" />
+            ) : (
+              <p>Drag & drop leaf image here or click to upload</p>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard 
-              icon={BarChart3} 
-              title="Crop Analytics" 
-              desc="Deep-learning models to predict harvest quality and soil health."
-              delay={0.1}
-              isDark={isDark}
-            />
-            <FeatureCard 
-              icon={CloudSun} 
-              title="Weather IQ" 
-              desc="Micro-climate tracking specific to your geofenced farm coordinates."
-              delay={0.2}
-              isDark={isDark}
-            />
-            <FeatureCard 
-              icon={Cpu} 
-              title="IoT Ecosystem" 
-              desc="Seamlessly connect sensors, drones, and automated irrigation."
-              delay={0.3}
-              isDark={isDark}
-            />
-            <FeatureCard 
-              icon={Sprout} 
-              title="Sustainability" 
-              desc="Optimize resources to reduce carbon footprint and water waste."
-              delay={0.4}
-              isDark={isDark}
-            />
-          </div>
-        </div>
-      </section>
+          <button
+            onClick={handlePredict}
+            disabled={loading || geminiLoading}
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-2xl"
+          >
+            {loading || geminiLoading ? "Analyzing..." : "Predict Disease"}
+          </button>
 
-      {/* Testimonials with Glass Effect */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className={`p-8 rounded-3xl border ${isDark ? 'bg-slate-800/40 border-slate-700' : 'bg-white border-slate-100 shadow-sm'}`}>
-                <div className="flex gap-1 text-amber-400 mb-6">
-                  {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
-                </div>
-                <p className={`text-lg mb-8 italic ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                  "The AI models provided insights we didn't think were possible without manual soil testing. It saved us thousands."
+          {result && (
+            <div className="mt-6 text-center">
+              <p className="text-xl font-bold text-emerald-500">
+                {result.prediction}
+              </p>
+              <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
+                Confidence: {result.confidence}%
+              </p>
+
+              {geminiLoading && (
+                <p className={isDark ? 'text-slate-400 mt-4' : 'text-slate-600 mt-4'}>
+                  Generating detailed cure guidance with Gemini...
                 </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20" />
-                  <div>
-                    <div className="font-bold">Farm Director {i}</div>
-                    <div className="text-sm text-slate-500">AgriTech Solutions</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              )}
 
-      {/* CTA Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-emerald-600 to-teal-800 p-12 md:p-20 text-center text-white">
-          <div className="relative z-10">
-            <h2 className="text-4xl md:text-6xl font-black mb-8">Ready to grow smarter?</h2>
-            <p className="text-emerald-100 text-xl mb-12 max-w-2xl mx-auto">
-              Join the 5,000+ agricultural engineers and modern farmers revolutionizing food production.
-            </p>
-            <button className="bg-white text-emerald-600 hover:scale-105 transition-transform px-10 py-5 rounded-2xl font-black text-lg shadow-xl">
-              Start Your Free Journey
-            </button>
-          </div>
-          {/* Decorative shapes */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl -ml-32 -mb-32" />
+              {geminiError && (
+                <p className="mt-4 text-rose-500 font-medium">{geminiError}</p>
+              )}
+
+              {geminiAdvice && (
+                <div className={`mt-6 p-5 rounded-2xl text-left whitespace-pre-line border
+                  ${isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'}
+                `}>
+                  <h3 className="text-lg font-semibold mb-3 text-emerald-500">
+                    Gemini Detailed Disease Guidance
+                  </h3>
+                  <p>{geminiAdvice}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 

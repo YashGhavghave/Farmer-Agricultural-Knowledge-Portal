@@ -89,6 +89,31 @@ function Navbar() {
     { label: "Tools & Machinery", path: "/nav/Tools&machinery", icon: Wrench },
   ];
 
+  useEffect(() => {
+    // Fetch user data including avatar from backend
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        
+        const response = await fetch('http://localhost:3000/api/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user?.avatar) {
+            localStorage.setItem('avatar', data.user.avatar);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch user data', err);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <header className={`w-full ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-900'} shadow-md transition-colors duration-300`}>
       <nav className="max-w-[90rem] w-full mx-auto px-4 py-3 flex items-center justify-between">
